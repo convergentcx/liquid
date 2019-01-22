@@ -1,0 +1,33 @@
+{
+  "name": "@convergent/liquid",
+  "version": "0.0.1",
+  "description": "Liquid tokens for creators and artists.",
+  "main": "index.js",
+  "scripts": {
+    "ganache": "ganache-cli --port 9545 --deterministic",
+    "test": "NODE_ENV=test truffle test",
+    "local:console": "npx truffle console --network local",
+    "local:session": "zos session --network local --from 0x1df62f291b2e969fb0849d99d9ce41e2f137006e --expires 3600"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/convergentcx/smart-contracts.git"
+  },
+  "keywords": [
+    "ethereum"
+  ],
+  "author": "lsaether",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/convergentcx/smart-contracts/issues"
+  },
+  "homepage": "https://github.com/convergentcx/smart-contracts#readme",
+  "dependencies": {
+    "openzeppelin-eth": "^2.0.2",
+    "zos-lib": "^2.1.0"
+  },
+  "devDependencies": {
+    "ganache-cli": "^6.2.5",
+    "truffle": "^5.0.2"
+  }
+}
