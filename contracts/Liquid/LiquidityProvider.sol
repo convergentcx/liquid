@@ -5,6 +5,9 @@ import "openzeppelin-eth/contracts/ERC20/ERC20.sol";
 // import "openzeppelin-eth/contracts/ERC20/ERC20Detailed.sol";
 import "zos-lib/contracts/Initializable.sol";
 
+import "./Curves.sol";
+import "./LiquidToken.sol";
+
 /**
  * @title LiquidProvider
  * Logic for providing liquidity to low volume tokens
@@ -17,7 +20,7 @@ contract LiquidProvider is Initializable, Ownable {
     ERC20   public reserveAsset;
     uint128 public reserve;
 
-    address public curves;
+    Curves public curves;
 
     uint256 public heldContributions;
 

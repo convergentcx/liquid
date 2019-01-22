@@ -19,12 +19,16 @@ contract LiquidToken is Initializable, Ownable, ERC20 {
     /**
      * @dev condense() mints new Liquid Tokens 
      */
-    function condense(address _to, uint256 _amount) onlyOwner {}
+    function condense(address _to, uint256 _amount) public onlyOwner {
+        _mint(_to, _amount);
+    }
 
     /**
      * @dev evap() burns Liquid Tokens 
      */
-    function evap(address _from, uint256 _amount) onlyOwner {}
+    function evap(address _from, uint256 _amount) public onlyOwner {
+        _burn(_from, _amount);
+    }
 
     /**
      * @dev leak() send liquid tokens to drain
