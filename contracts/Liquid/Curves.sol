@@ -4,11 +4,11 @@ import "./Polynomial.sol";
 
 contract Curves {
     Polynomial public buyCurve;
-    Polynomail public sellCurve;
+    Polynomial public sellCurve;
 
     constructor(address _buyCurve, address _sellCurve) public {
         buyCurve = Polynomial(_buyCurve);
-        sellCurve = Polynomail(_sellCurve);
+        sellCurve = Polynomial(_sellCurve);
     }
 
     function buyCurveIntegral(uint128 _X)
@@ -24,5 +24,20 @@ contract Curves {
             return uint128(sellCurve.integral(_X));
         }
         return buyCurveIntegral(_X);
+    }
+
+    function buyCurveY(uint128 _X)
+        public view returns (uint128)
+    {
+        return uint128(buyCurve.Y(_X));
+    }
+
+    function sellCurveY(uint128 _X)
+        public view returns (uint128)
+    {
+        if (address(sellCurve) != address(0x0)) {
+            return uint128(sellCurve.Y(_X));
+        }
+        return uint128(buyCurveY(_X));
     }
 }

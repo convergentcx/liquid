@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "openzeppelin-eth/contracts/ownership/Ownable.sol";
-import "openzeppelin-eth/contracts/ERC20/ERC20.sol";
+import "openzeppelin-eth/contracts/token/ERC20/ERC20.sol";
 // import "openzeppelin-eth/contracts/ERC20/ERC20Detailed.sol";
 import "zos-lib/contracts/Initializable.sol";
 
@@ -9,10 +9,10 @@ import "./Curves.sol";
 import "./LiquidToken.sol";
 
 /**
- * @title LiquidProvider
+ * @title LiquidityProvider
  * Logic for providing liquidity to low volume tokens
  */
-contract LiquidProvider is Initializable, Ownable {
+contract LiquidityProvider is Initializable, Ownable {
     event LIQUID_BUY            (address indexed buyer, uint128 amount, uint128 paid);
     event LIQUID_CONTRIBUTION   (address indexed buyer, uint128 contribution);
     event LIQUID_SELL           (address indexed seller, uint128 amount, uint128 returnAmount);
@@ -53,38 +53,38 @@ contract LiquidProvider is Initializable, Ownable {
     function cost(uint128 _numTokens)
         public view returns (uint128)
     {
-        uint128 totalSupply = liquidToken.totalSupply();
+        uint128 totalSupply = uint128(liquidToken.totalSupply());
         uint128 oldIntegral = curves.buyCurveIntegral(totalSupply);
-        uint128 newIntegral = curves.buyCurveIntegral(totalSupply.add(_numTokens));
-        return newIntegral.sub(oldIntegral);
+        uint128 newIntegral = curves.buyCurveIntegral(totalSupply + _numTokens);
+        return newIntegral - oldIntegral;
     }
 
     function payout(uint128 _numTokens)
         public view returns (uint128)
     {
-        uint128 totalSupply = liquidToken.totalSupply();
-        uint128 sellCurveIntegral = curves.sellCurveIntegral(totalSupply.sub(_numTokens));
-        return reserve.sub(sellCurveIntegral);
+        uint128 totalSupply = uint128(liquidToken.totalSupply());
+        uint128 sellCurveIntegral = curves.sellCurveIntegral(totalSupply - _numTokens);
+        return reserve - sellCurveIntegral;
     }
 
     function currentBuyPrice()
         public view returns (uint128)
     {
-        uint128 totalSupply = liquidToken.totalSupply();
+        uint128 totalSupply = uint128(liquidToken.totalSupply());
         return curves.buyCurveY(totalSupply);
     }
 
     function currentSellPrice()
         public view returns (uint128)
     {
-        uint128 totalSupply = liquidToken.totalSupply();
+        uint128 totalSupply = uint128(liquidToken.totalSupply());
         return curves.sellCurveY(totalSupply);
     }
 
     function marketCap()
         public view returns (uint128)
     {
-        return liquidToken.totalSupply().mul(currentBuyPrice());
+        return uint128(liquidToken.totalSupply()) * currentBuyPrice();
     }
 
     function buy(uint128 _numTokens)
@@ -97,13 +97,13 @@ contract LiquidProvider is Initializable, Ownable {
 
         uint128 toPay = cost(_numTokens);
 
-        uint256 userFunds = reserveAsset.balanceOf(msg.sender);
+        uint128 userFunds = uint128(reserveAsset.balanceOf(msg.sender));
         require(
             userFunds >= toPay,
             "User does not have enough funds to buy"
         );
         require(
-            reserveAsset.approval(msg.sender, address(this)) >= toPay,
+            reserveAsset.allowance(msg.sender, address(this)) >= toPay,
             "User has not approved this contract of the required funds"
         );
 
@@ -114,7 +114,8 @@ contract LiquidProvider is Initializable, Ownable {
         );
 
         uint128 addToReserve = amountToReserve(_numTokens);
-        toClaim += toPay - addToReserve;
+        uint128 contribution = toPay - addToReserve;
+        heldContributions += contribution;
         reserve += addToReserve;
 
         bool mintSuccessful = liquidToken.condense(msg.sender, _numTokens);
@@ -130,9 +131,9 @@ contract LiquidProvider is Initializable, Ownable {
     function amountToReserve(uint128 _numTokens)
         internal returns (uint128)
     {
-        uint128 totalSupply = liquidToken.totalSupply();
-        uint128 sellCurveIntegral = curves.sellCurveIntegral(totalSupply.add(_numTokens));
-        return sellCurveIntegral.sub(reserve);
+        uint128 totalSupply = uint128(liquidToken.totalSupply());
+        uint128 sellCurveIntegral = curves.sellCurveIntegral(totalSupply + _numTokens);
+        return sellCurveIntegral - reserve;
     }
 
     function sell(uint128 _numTokens)
@@ -143,7 +144,7 @@ contract LiquidProvider is Initializable, Ownable {
             "Parameter `_numTokens` expected and not supplied"
         );
 
-        uint128 userBalance = liquidToken.balanceOf(msg.sender);
+        uint128 userBalance = uint128(liquidToken.balanceOf(msg.sender));
         require(
             userBalance >= _numTokens,
             "User does not have enough tokens to sell"
@@ -175,7 +176,7 @@ contract LiquidProvider is Initializable, Ownable {
             "Parameter `_numTokens` expected and not supplied"
         );
 
-        uint128 userBalance = liquidToken.balanceOf(_whoUses);
+        uint128 userBalance = uint128(liquidToken.balanceOf(_whoUses));
         require(
             userBalance >= _numTokens,
             "User balance too low"

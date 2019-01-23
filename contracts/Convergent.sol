@@ -7,6 +7,6 @@ contract ConvergentBeta is App {
     string CURVES               = 'CONVERGET_PACKAGE_CURVES';
     string LIQUIDITY_PROVIDER   = 'CONVERGENT_PACKAGE_LIQUIDITY_PROVIDER';
     string LIQUID_TOKEN         = 'CONVERGENT_PACKAGE_LIQUID_TOKEN';
-    string POLYNOMAIL           = 'CONVERGENT_PACKAGE_POLYNOMIAL';
+    string POLYNOMIAL           = 'CONVERGENT_PACKAGE_POLYNOMIAL';
     
 }

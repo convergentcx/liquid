@@ -43,7 +43,7 @@ contract Polynomial {
         
         int256 result = fixidity.multiply(
             slope,
-            fixidity.power_any(int256(_X, exponent))
+            fixidity.power_any(int256(_X), exponent)
         );
 
         assert(result >= 0);
@@ -105,7 +105,7 @@ contract Polynomial {
 
         int256 stepOne = fixidity.divide(_integral, slope);
         int256 stepTwo = fixidity.multiply(stepOne, nextExponent);
-        int256 stepThree = fixidty.power_any(
+        int256 stepThree = fixidity.power_any(
             stepTwo,
             fixidity.divide(fixidity.fixed_1, nextExponent)
         );

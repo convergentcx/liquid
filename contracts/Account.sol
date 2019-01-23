@@ -12,7 +12,7 @@ import "./Liquid/LiquidityProvider.sol";
  * @dev   Manages the logic for user accounts on Convergent.
  */
 contract Account is Initializable {
-    event METADATA_UPDATE (bytes newMetadata);
+    event METADATA_UPDATE (bytes32 newMetadata);
     event SERVICE_REQUEST (address indexed requestor, uint8 indexed serviceIndex, string message);
 
     address public creator;
@@ -26,20 +26,23 @@ contract Account is Initializable {
 
     function initialize(
         address _creator,
-        bytes32 _metadata
+        bytes32 _metadata,
+        address _curves
     )   initializer
         public
     {
         creator = _creator;
         metadata = _metadata;
         liquidityProvider = new LiquidityProvider();
-        liquidityProvider.initialize()
+        liquidityProvider.initialize(_curves);
+
+        emit METADATA_UPDATE(_metadata);
     }
 
     // Probably not a robust upgradability solution
     function upgrade(address _liquidityProvider) public onlyCreator {
         delete liquidityProvider;
-        liquidityProvider = _liquidityProvider;
+        liquidityProvider = LiquidityProvider(_liquidityProvider);
     }
 
     function addService(
@@ -79,7 +82,7 @@ contract Account is Initializable {
     {
         uint128 price = services[_serviceIndex];
 
-        bool paid = liquidProvider.use(msg.sender, price);
+        bool paid = liquidityProvider.use(msg.sender, price);
         require(
             paid,
             "Tokens must have been paid from requestor"
