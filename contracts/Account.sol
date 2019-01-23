@@ -1,11 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "zos-lib/contracts/Initializable.sol";
-
 import "./Liquid/LiquidityProvider.sol";
-
-// TODO
-//  - add proxy function
 
 /**
  * @title Account
@@ -18,7 +14,7 @@ contract Account is Initializable {
     address public creator;
     bytes32 public metadata;
 
-    uint8 public curServiceIndex = 0;
+    uint8 public curServiceIndex;
     // serviceIndex => servicePrice
     mapping (uint8 => uint128) public services;
 
@@ -34,7 +30,9 @@ contract Account is Initializable {
         creator = _creator;
         metadata = _metadata;
         liquidityProvider = new LiquidityProvider();
-        liquidityProvider.initialize(_curves);
+        liquidityProvider.initialize(
+            _curves
+        );
 
         emit METADATA_UPDATE(_metadata);
     }
@@ -88,7 +86,15 @@ contract Account is Initializable {
             "Tokens must have been paid from requestor"
         );
 
+        // TODO transfer the tokens to creator
+
         emit SERVICE_REQUEST(msg.sender, _serviceIndex, _message);
+    }
+
+    function proxy(address _target, bytes _data)
+        public payable onlyCreator returns (bool)
+    {
+        return _target.call.value(msg.value)(_data);
     }
 
     modifier onlyCreator() {

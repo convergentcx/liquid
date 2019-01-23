@@ -30,10 +30,16 @@ contract LiquidityProvider is Initializable, Ownable {
 
     LiquidToken public liquidToken;
 
-    function initialize(address _curves) public initializer{
+    function initialize(
+        address _curves,
+        address _reserveAsset
+    )   public 
+        initializer
+    {
         Ownable.initialize(msg.sender);
         liquidToken = new LiquidToken();
         liquidToken.initialize();
+        reserveAsset = ERC20(_reserveAsset);
         // The below doesn't feel right.
         curves = Curves(_curves);
     }

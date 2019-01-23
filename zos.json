@@ -3,7 +3,7 @@
   "name": "convergent",
   "version": "0.1.0",
   "contracts": {
-    "MyContract": "MyContract"
+    "Account": "Account"
   },
   "dependencies": {
     "openzeppelin-eth": "^2.0.2"
