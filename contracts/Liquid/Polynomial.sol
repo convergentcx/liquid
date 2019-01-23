@@ -46,7 +46,7 @@ contract Polynomial {
             fixidity.power_any(int256(_X, exponent))
         );
 
-        assert(result > 0);
+        assert(result >= 0);
 
         return uint128(result);
     }
@@ -82,7 +82,7 @@ contract Polynomial {
             )
         );
 
-        assert(result > 0);
+        assert(result >= 0);
         
         return uint128(result); 
     }
@@ -110,7 +110,7 @@ contract Polynomial {
             fixidity.divide(fixidity.fixed_1, nextExponent)
         );
 
-        assert(stepThree > 0);
+        assert(stepThree >= 0);
         
         return uint128(stepThree);
     }

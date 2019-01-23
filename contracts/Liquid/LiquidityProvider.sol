@@ -30,10 +30,12 @@ contract LiquidProvider is Initializable, Ownable {
 
     LiquidToken public liquidToken;
 
-    function initialize() public initializer{
+    function initialize(address _curves) public initializer{
         Ownable.initialize(msg.sender);
         liquidToken = new LiquidToken();
         liquidToken.initialize();
+        // The below doesn't feel right.
+        curves = Curves(_curves);
     }
 
     // Function callable by any address which will send the contributions to
@@ -52,26 +54,27 @@ contract LiquidProvider is Initializable, Ownable {
         public view returns (uint128)
     {
         uint128 totalSupply = liquidToken.totalSupply();
-        uint128 buyCurveIntegral = curves.buyCurveIntegral(totalSupply.add(_numTokens));
-        return buyCurveIntegral.sub(reserve);
+        uint128 oldIntegral = curves.buyCurveIntegral(totalSupply);
+        uint128 newIntegral = curves.buyCurveIntegral(totalSupply.add(_numTokens));
+        return newIntegral.sub(oldIntegral);
     }
 
     function payout(uint128 _numTokens)
-        public view returs (uint128)
+        public view returns (uint128)
     {
         uint128 totalSupply = liquidToken.totalSupply();
         uint128 sellCurveIntegral = curves.sellCurveIntegral(totalSupply.sub(_numTokens));
         return reserve.sub(sellCurveIntegral);
     }
 
-    function currentBuy()
+    function currentBuyPrice()
         public view returns (uint128)
     {
         uint128 totalSupply = liquidToken.totalSupply();
         return curves.buyCurveY(totalSupply);
     }
 
-    function currentSell()
+    function currentSellPrice()
         public view returns (uint128)
     {
         uint128 totalSupply = liquidToken.totalSupply();
@@ -81,7 +84,7 @@ contract LiquidProvider is Initializable, Ownable {
     function marketCap()
         public view returns (uint128)
     {
-        return liquidToken.totalSupply().mul(currentBuy());
+        return liquidToken.totalSupply().mul(currentBuyPrice());
     }
 
     function buy(uint128 _numTokens)
@@ -110,9 +113,9 @@ contract LiquidProvider is Initializable, Ownable {
             "The transfer of reserve asset failed"
         );
 
-        uint128 contribution = contributionAmount(_numTokens);
-        toClaim += contribution;
-        reserve += toPay - contribution;
+        uint128 addToReserve = amountToReserve(_numTokens);
+        toClaim += toPay - addToReserve;
+        reserve += addToReserve;
 
         bool mintSuccessful = liquidToken.condense(msg.sender, _numTokens);
         require(
@@ -124,7 +127,7 @@ contract LiquidProvider is Initializable, Ownable {
         emit LIQUID_CONTRIBUTION(msg.sender, contribution);
     }
 
-    function contributionAmount(uint128 _numTokens)
+    function amountToReserve(uint128 _numTokens)
         internal returns (uint128)
     {
         uint128 totalSupply = liquidToken.totalSupply();
@@ -147,7 +150,7 @@ contract LiquidProvider is Initializable, Ownable {
         );
 
         uint128 returnAmount = payout(_numTokens);
-        reserve = reserve - returnAmount;
+        reserve -= returnAmount;
 
         bool burnSuccess = liquidToken.evap(msg.sender, _numTokens);
         require(
