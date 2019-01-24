@@ -93,8 +93,11 @@ contract LiquidityProvider is Initializable, Ownable {
         return uint128(liquidToken.totalSupply()) * currentBuyPrice();
     }
 
-    function buy(uint128 _numTokens)
-        public 
+    function buy(
+        uint128 _numTokens,
+        uint128 _maxSlippage
+    )   public 
+        returns (bool)
     {
         require(
             _numTokens > 0,
@@ -102,6 +105,38 @@ contract LiquidityProvider is Initializable, Ownable {
         );
 
         uint128 toPay = cost(_numTokens);
+
+        bool bought = buyBySpending(
+            toPay,
+            _numTokens,
+            _maxSlippage
+        );
+
+        require(
+            bought,
+            "Failed to buy"
+        );
+
+        return true;
+    }
+
+    /**
+     * Buy by spending the `_toPay` amount of reserve asset.
+     * @param _toPay Amount of reserve asset to spend on purchase.
+     */
+    function buyBySpending(
+        uint256 _toPay,
+        uint128 _expected,
+        uint128 _maxSlippage
+    )   public 
+        returns (bool)
+    {
+        uint128 toPay = uint128(_toPay);
+
+        require(
+            toPay > 0,
+            "Parameter `_amount` expected and not supplied"
+        );
 
         uint128 userFunds = uint128(reserveAsset.balanceOf(msg.sender));
         require(
@@ -113,25 +148,33 @@ contract LiquidityProvider is Initializable, Ownable {
             "User has not approved this contract of the required funds"
         );
 
-        bool transferSuccessful = reserveAsset.transferFrom(msg.sender, address(this), toPay);
+        bool reserveTransferred = reserveAsset.transferFrom(msg.sender, address(this), toPay);
         require(
-            transferSuccessful,
-            "The transfer of reserve asset failed"
+            reserveTransferred,
+            "The transfer of the reserve asset failed"
         );
 
-        uint128 addToReserve = amountToReserve(_numTokens);
+        uint128 purchasedTokens = curves.buyCurveSolveX(reserve + toPay) - uint128(liquidToken.totalSupply());
+        require(
+            (purchasedTokens >= (_expected - _maxSlippage)) || (_expected == 0),
+            "Was not able to purchase the expected amount of tokens when _maxSlippage was taken into consideration"
+        );
+
+        uint128 addToReserve = amountToReserve(purchasedTokens);
         uint128 contribution = toPay - addToReserve;
         heldContributions += contribution;
         reserve += addToReserve;
 
-        bool mintSuccessful = liquidToken.condense(msg.sender, _numTokens);
+        bool tokensCondensed = liquidToken.condense(msg.sender, purchasedTokens);
         require(
-            mintSuccessful,
-            "The minting of new tokens failed"
+            tokensCondensed,
+            "Condensation of new tokens failed"
         );
 
-        emit LIQUID_BUY(msg.sender, _numTokens, toPay);
+        emit LIQUID_BUY(msg.sender, purchasedTokens, toPay);
         emit LIQUID_CONTRIBUTION(msg.sender, contribution);
+        
+        return true;
     }
 
     function amountToReserve(uint128 _numTokens)

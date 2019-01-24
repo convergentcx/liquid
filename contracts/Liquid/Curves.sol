@@ -40,4 +40,10 @@ contract Curves {
         }
         return uint128(buyCurveY(_X));
     }
+
+    function buyCurveSolveX(uint128 _integral)
+        public view returns (uint128)
+    {
+        return (uint128(buyCurve.solveForX(_integral)));
+    }
 }
