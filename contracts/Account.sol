@@ -14,11 +14,11 @@ contract Account is Initializable {
     address public creator;
     bytes32 public metadata;
 
+    LiquidityProvider public liquidityProvider;
+
     uint8 public curServiceIndex;
     // serviceIndex => servicePrice
     mapping (uint8 => uint128) public services;
-
-    LiquidityProvider public liquidityProvider;
 
     function initialize(
         address _creator,
