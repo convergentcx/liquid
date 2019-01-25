@@ -37,7 +37,6 @@ contract('ConvergentBeta', (accounts) => {
   let buyCurve, sellCurve;
   let curves;
 
-
   it('deploys all contracts', async () => {
     // First deploy the curves.
     buyCurve = await Polynomial.new(

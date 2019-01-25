@@ -11,16 +11,16 @@ contract Polynomial {
 
     FixidityLib.Fixidity public fixidity;
 
-    uint8 public expN;
-    uint8 public expD;
-    uint8 public slopeN;
-    uint8 public slopeD;
+    uint32 public expN;
+    uint32 public expD;
+    uint32 public slopeN;
+    uint32 public slopeD;
 
     constructor(
-        uint8 _expN,
-        uint8 _expD,
-        uint8 _slopeN,
-        uint8 _slopeD
+        uint32 _expN,
+        uint32 _expD,
+        uint32 _slopeN,
+        uint32 _slopeD
     )   public
     {
         expN = _expN;
@@ -82,7 +82,10 @@ contract Polynomial {
             )
         );
 
-        assert(result >= 0);
+        require(
+            result >= 0,
+            "Integral less than zero detected - CRITICAL"
+        );
         
         return uint128(result); 
     }

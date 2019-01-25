@@ -1,5 +1,9 @@
 pragma solidity ^0.4.24;
 
+import "../Fixidity/ExponentLib.sol";
+import "../Fixidity/FixidityLib.sol";
+import "../Fixidity/LogarithmLib.sol";
+
 import "./Polynomial.sol";
 
 contract Curves {
