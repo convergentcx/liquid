@@ -1,11 +1,13 @@
 pragma solidity ^0.4.24;
 
 import "openzeppelin-eth/contracts/token/ERC20/ERC20.sol";
+import "openzeppelin-eth/contracts/math/SafeMath.sol";
 import "zos-lib/contracts/Initializable.sol";
 
 import "./bancor-contracts/converter/BancorFormula.sol";
 
 contract X is Initializable, BancorFormula, ERC20 {
+    using SafeMath for uint256;
 
     // Parts per million
     uint24 public constant PPM = 1000000;
@@ -15,6 +17,9 @@ contract X is Initializable, BancorFormula, ERC20 {
 
     address public reserveAsset;
     uint256 public reserve;
+
+    uint256 public virtualSupply;
+    uint256 public virtualReserve;
 
     function initialize(
         _rrBuy,
@@ -28,15 +33,23 @@ contract X is Initializable, BancorFormula, ERC20 {
         reserveAsset = _rAsset;
     }
 
-    function cost() public {}
+    function cost() public view returns (uint256) {}
 
-    function payout() public {}
+    function payout() public view returns (uint256) {}
 
-    function currentBuy() public {}
+    function currentBuy() public view returns (uint256) {}
 
-    function currentSell() public {}
+    function currentSell() public view returns (uint256) {}
 
-    function marketCap() public {}
+    function marketCap() public view returns (uint256) {}
+
+    function vSupply() internal view returns (uint256) {
+        return virtualSupply.add(totalSupply());
+    }
+
+    function vReserve() internal view returns (uint256) {
+        return virtualReserve.add(reserve);
+    }
 
     function buy(uint256 _toSpend, uint256 _expected, uint256 _maxSlippage)
         public returns (bool)
@@ -57,8 +70,8 @@ contract X is Initializable, BancorFormula, ERC20 {
             require(reserveTransferred);
 
             uint256 tokensBought = calculatePurchaseReturn(
-                totalSupply(),
-                reserve,
+                vSupply(),
+                vReserve(),
                 reserveRatioBuy,
                 _toSpend
             );
@@ -66,14 +79,14 @@ contract X is Initializable, BancorFormula, ERC20 {
             // If expected is set check that it hasn't slipped
             if (_expected > 0) {
                 require(
-                    tokensBought >= (_expected - _maxSlippage)
+                    tokensBought >= (_expected.sub(_maxSlippage))
                 );
             }
 
             uint256 toReserve = calcReserveAmount(_toSpend);
-            uint256 contribution = _toSpend - toReserve;
-            heldContributions += contribution;
-            reserve += toReserve;
+            uint256 contribution = _toSpend.sub(toReserve);
+            heldContributions = heldContributions.add(contribution);
+            reserve = reserve.add(toReserve);
 
             bool tokensMinted = _mint(msg.sender, tokensBought);
             require(tokensMinted);
@@ -92,8 +105,8 @@ contract X is Initializable, BancorFormula, ERC20 {
         internal view returns (uint256)
     {
         return calculatePurchaseReturn(
-            totalSupply(),
-            reserve,
+            vSupply(),
+            vReserve(),
             reserveRatioSell,
             _toSpend
         );
@@ -110,13 +123,13 @@ contract X is Initializable, BancorFormula, ERC20 {
         );
 
         uint256 reserveReturned = calculateSaleReturn(
-            totalSupply(),
-            reserve,
+            vSupply(),
+            vReserve(),
             reserveRatioSell,
             _toSell
         );
 
-        reserve -= reserveReturned;
+        reserve = reserve.sub(reserveReturned);
 
         bool tokensBurned = _burn(msg.sender, _toSell);
         require(tokensBurned);
