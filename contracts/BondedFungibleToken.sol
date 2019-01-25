@@ -103,34 +103,34 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
             bool reserveTransferred = ERC20(reserveAsset).transferFrom(msg.sender, address(this), _toSpend);
             require(reserveTransferred);
 
-            // @dev: this causes an error:
+            // @dev: calculatePurchaseReturn causes an error when supply/reserve are 0! => setting them to 1 for now
 
-            // uint256 tokensBought = calculatePurchaseReturn(
-            //     vSupply(),
-            //     vReserve(),
-            //     reserveRatioBuy,
-            //     _toSpend
-            // );
+            uint256 tokensBought = calculatePurchaseReturn(
+                1,
+                1,
+                reserveRatioBuy,
+                _toSpend
+            );
 
-            // // If expected is set check that it hasn't slipped
-            // if (_expected > 0) {
-            //     require(
-            //         tokensBought >= (_expected.sub(_maxSlippage))
-            //     );
-            // }
+            // If expected is set check that it hasn't slipped
+            if (_expected > 0) {
+                require(
+                    tokensBought >= (_expected.sub(_maxSlippage))
+                );
+            }
 
             // calcReserveAdd uses calculatePurchaseReturn which is the wrong function..
             // this is the same error from before - we need a bit more steps to calculate the correct contribution amount
 
-            // uint256 toReserve = calcReserveAdd(_toSpend);  
-            // uint256 contribution = _toSpend.sub(toReserve);
-            // heldContributions = heldContributions.add(contribution);
-            // reserve = reserve.add(toReserve);
+            uint256 toReserve = calcReserveAdd(_toSpend);  
+            uint256 contribution = _toSpend.sub(toReserve);
+            heldContributions = heldContributions.add(contribution);
+            reserve = reserve.add(toReserve);
 
-            // _mint(msg.sender, tokensBought);
+            _mint(msg.sender, tokensBought);
 
-            // emit Bought(msg.sender, tokensBought, _toSpend);
-            // emit Contributed(msg.sender, contribution);
+            emit Bought(msg.sender, tokensBought, _toSpend);
+            emit Contributed(msg.sender, contribution);
 
             return true;
         }
@@ -142,12 +142,15 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     function calcReserveAdd(uint256 _toSpend) // calcReserveAmount is a confusing name
         internal view returns (uint256)
     {
-        return calculatePurchaseReturn(
-            vSupply(),
-            vReserve(),
-            reserveRatioSell,
+        uint256 newTokens = calculatePurchaseReturn(
+            1,
+            1,
+            reserveRatioBuy,
             _toSpend
         );
+
+        return calculateSaleReturn(vSupply() + newTokens, 1, reserveRatioSell, newTokens);
+
     }
 
     function sell(uint256 _toSell) // this doesn't need expected & slippage
