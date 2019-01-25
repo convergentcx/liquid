@@ -13,7 +13,7 @@ const deployMockERC20 = async (supply) => {
   expect(
     supply,
     "Failed `deployMockERC20` initial supply sanity check",
-  ).to.equal(retSupply.toString());
+  ).to.equal(retSupply.toNumber());
   return mock;
 }
 
@@ -21,12 +21,22 @@ contract('BondedFungibleToken', (accounts) => {
   let bft, mERC20;
 
   before(async () => {
-    mERC20 = await deployMockERC20(toWei('1', 'ether')); // why is the argument expressed in wei here? this is a generic ERC20, so the supply should just be a number
+    const userReserveBalance = 1000000
+    mERC20 = await deployMockERC20(userReserveBalance); // why was the argument expressed in wei here? this is a generic ERC20, so the supply should just be a number
     expect(mERC20.address).to.exist;
+    const retUserReserveBalance = await mERC20.balanceOf(accounts[0]);
+    expect(
+      retUserReserveBalance.toNumber()
+    ).to.equal(userReserveBalance);
 
     bft = await BFT.new()
     expect(bft.address).to.exist;
     await bft.init(accounts[0], 'Achill', 'ACT', mERC20.address, 500000, 200000, 0, 0);
+
+    // approve bft to spend user's ERC20 reserve asset
+    const reserveApproval = 1000;
+    await mERC20.approve(bft.address, reserveApproval);
+
   });
 
   it('Returns expected parameters on initialization', async () => {
@@ -59,7 +69,7 @@ contract('BondedFungibleToken', (accounts) => {
     const retTotalSupply = await bft.totalSupply();
     const retReserve = await bft.reserve();
     const retReserveRatioBuy = await bft.reserveRatioBuy();
-    // await bft.buy();
+    await bft.buy(1000, 0, 0);
     // console.log(retTokensBought)
     // await bft.buy(1000, 0, 0);
     // const retHeldContributions = await bft.heldContributions();

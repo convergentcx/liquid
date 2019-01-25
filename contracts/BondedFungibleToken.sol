@@ -96,36 +96,38 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
 
         } else {
             uint256 userBalance = ERC20(reserveAsset).balanceOf(msg.sender);
-            require(_toSpend > userBalance);
+            require(_toSpend <= userBalance); // should be smaller and can be equal!
             uint256 userApproved = ERC20(reserveAsset).allowance(msg.sender, address(this));
             require(userApproved >= _toSpend);
 
             bool reserveTransferred = ERC20(reserveAsset).transferFrom(msg.sender, address(this), _toSpend);
             require(reserveTransferred);
 
-            uint256 tokensBought = calculatePurchaseReturn(
-                vSupply(),
-                vReserve(),
-                reserveRatioBuy,
-                _toSpend
-            );
+            // @dev: this causes an error:
 
-            // If expected is set check that it hasn't slipped
-            if (_expected > 0) {
-                require(
-                    tokensBought >= (_expected.sub(_maxSlippage))
-                );
-            }
+            // uint256 tokensBought = calculatePurchaseReturn(
+            //     vSupply(),
+            //     vReserve(),
+            //     reserveRatioBuy,
+            //     _toSpend
+            // );
 
-            uint256 toReserve = calcReserveAdd(_toSpend);
-            uint256 contribution = _toSpend.sub(toReserve);
-            heldContributions = heldContributions.add(contribution);
-            reserve = reserve.add(toReserve);
+            // // If expected is set check that it hasn't slipped
+            // if (_expected > 0) {
+            //     require(
+            //         tokensBought >= (_expected.sub(_maxSlippage))
+            //     );
+            // }
 
-            _mint(msg.sender, tokensBought);
+            // uint256 toReserve = calcReserveAdd(_toSpend);
+            // uint256 contribution = _toSpend.sub(toReserve);
+            // heldContributions = heldContributions.add(contribution);
+            // reserve = reserve.add(toReserve);
 
-            emit Bought(msg.sender, tokensBought, _toSpend);
-            emit Contributed(msg.sender, contribution);
+            // _mint(msg.sender, tokensBought);
+
+            // emit Bought(msg.sender, tokensBought, _toSpend);
+            // emit Contributed(msg.sender, contribution);
 
             return true;
         }
