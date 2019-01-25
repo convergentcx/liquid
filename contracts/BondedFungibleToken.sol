@@ -17,11 +17,9 @@ contract BFTEvents {
 
 contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula, ERC20, ERC20Detailed {
     using SafeMath for uint256;
-
-    // Parts per million
-    uint24 public constant PPM = 1000000; // this is not allowed in upgradeable contracts because the proxy will not know the value of PPM
-
-    uint32 public reserveRatioBuy;
+    
+    // Ratios represented in parts per million (1-1000000)
+    uint32 public reserveRatioBuy; 
     uint32 public reserveRatioSell;
 
     address public reserveAsset;
@@ -37,10 +35,10 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         string _name,
         string _symbol,
         address _rAsset,
-        uint32 _rrBuy, // represented in parts per million (1-1000000) 
-        uint32 _rrSell, // represented in parts per million (1-1000000)
-        uint256 _vSupply, // what is this good for?
-        uint256 _vReserve // what is this good for?
+        uint32 _rrBuy,
+        uint32 _rrSell,
+        uint256 _vSupply,
+        uint256 _vReserve
     )   public
         initializer
     {
@@ -53,6 +51,9 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         reserveAsset = _rAsset;
         virtualSupply = _vSupply;
         virtualReserve = _vReserve;
+
+        uint24 public constant PPM = 1000000;
+
     }
 
     function sendContributions() public returns (bool) {
@@ -96,7 +97,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
 
         } else {
             uint256 userBalance = ERC20(reserveAsset).balanceOf(msg.sender);
-            require(_toSpend <= userBalance); // should be smaller and can be equal!
+            require(userBalance >= _toSpend);
             uint256 userApproved = ERC20(reserveAsset).allowance(msg.sender, address(this));
             require(userApproved >= _toSpend);
 
@@ -122,7 +123,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
             // calcReserveAdd uses calculatePurchaseReturn which is the wrong function..
             // this is the same error from before - we need a bit more steps to calculate the correct contribution amount
 
-            uint256 toReserve = calcReserveAdd(_toSpend);  
+            uint256 toReserve = calcAmountToReserve(_toSpend);  
             uint256 contribution = _toSpend.sub(toReserve);
             heldContributions = heldContributions.add(contribution);
             reserve = reserve.add(toReserve);
@@ -139,7 +140,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     /**
      * @dev Syntax Sugar over the lower curve purchase amount 
      */
-    function calcReserveAdd(uint256 _toSpend) // calcReserveAmount is a confusing name
+    function calcAmountToReserve(uint256 _toSpend)
         internal view returns (uint256)
     {
         uint256 newTokens = calculatePurchaseReturn(
@@ -153,7 +154,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
 
     }
 
-    function sell(uint256 _toSell) // this doesn't need expected & slippage
+    function sell(uint256 _toSell) // expected & slippage need to get added back in
         public returns (bool)
     {
         require(_toSell > 0);

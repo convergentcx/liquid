@@ -66,26 +66,30 @@ contract('BondedFungibleToken', (accounts) => {
 
   it('Allows buying token', async () => {
     const toSpendTest = 1000
-    const retTotalSupply = await bft.totalSupply();
+    // const retTotalSupply = await bft.totalSupply();
+    // const retReserve = await bft.reserve();
+    // const retReserveRatioBuy = await bft.reserveRatioBuy();
+    
+    await bft.buy(toSpendTest, 0, 0);
     const retReserve = await bft.reserve();
-    const retReserveRatioBuy = await bft.reserveRatioBuy();
-    await bft.buy(1000, 0, 0);
-    // console.log(retTokensBought)
-    // await bft.buy(1000, 0, 0);
-    // const retHeldContributions = await bft.heldContributions();
-    // expect(retHeldContributions.toString()
-    // ).to.equal('1000');
+    expect(retReserve.toString()
+    ).to.equal('1');
 
-    // expect(bft.balanceOf(accounts[0]
-    // ).to.equal('1000');
+    const retHeldContributions = await bft.heldContributions();
+    expect(retHeldContributions.toString()
+    ).to.equal('999');
+
+    const userBalance = await bft.balanceOf(accounts[0])
+    expect(userBalance.toString()
+    ).to.equal('30');
   });
 
 
   it('Allows selling token', async () => {
-    // await bft.sell(1000);
-    // const retHeldContributions = await bft.heldContributions();
-    // expect(heldContributions.toString()
-    // ).to.equal('1000');
+    await bft.sell(30);
+    const retReserve = await bft.reserve();
+    expect(retReserve.toString()
+    ).to.equal('1');
   });
 
   // it('Tests some view functions', async () => {
