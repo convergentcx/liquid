@@ -26,8 +26,8 @@ contract Account is Initializable {
         string _name,
         string _symbol,
         address _rAsset,
-        uint256 _rrBuy,
-        uint256 _rrSell,
+        uint32 _rrBuy,
+        uint32 _rrSell,
         uint256 _vSupply,
         uint256 _vReserve
     )   initializer
@@ -35,8 +35,9 @@ contract Account is Initializable {
     {
         creator = _creator;
         metadata = _metadata;
-        bft = new BondedFungibleToken();
-        bft.initialize(
+        bft = BondedFungibleToken(new BondedFungibleToken());
+        bft.init(
+            _creator,
             _name,
             _symbol,
             _rAsset,
@@ -55,7 +56,7 @@ contract Account is Initializable {
         public
     {
         services[curServiceIndex] = _price;
-        curServiceIndex = curServeIndex.add(1);
+        curServiceIndex = SafeMath.add(1, curServiceIndex);
     }
 
     function removeService(
@@ -87,7 +88,7 @@ contract Account is Initializable {
     {
         uint256 price = services[_serviceIndex];
         bft.transferFrom(msg.sender, creator, price);
-        
+
         emit ServiceRequested(msg.sender, _serviceIndex, _message);
     }
 

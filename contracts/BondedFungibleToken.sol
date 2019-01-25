@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 import "openzeppelin-eth/contracts/token/ERC20/ERC20.sol";
 import "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol";
+import "openzeppelin-eth/contracts/ownership/Ownable.sol";
 import "openzeppelin-eth/contracts/math/SafeMath.sol";
 import "zos-lib/contracts/Initializable.sol";
 
@@ -14,14 +15,14 @@ contract BFTEvents {
     event Sold(address indexed seller, uint256 amount, uint256 reserveReturned);
 }
 
-contract BondedFungibleToken is Initializable, BFTEvents, BancorFormula, ERC20, ERC20Detailed {
+contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula, ERC20, ERC20Detailed {
     using SafeMath for uint256;
 
     // Parts per million
     uint24 public constant PPM = 1000000;
 
-    uint256 public reserveRatioBuy;
-    uint256 public reserveRatioSell;
+    uint32 public reserveRatioBuy;
+    uint32 public reserveRatioSell;
 
     address public reserveAsset;
     uint256 public reserve;
@@ -31,19 +32,20 @@ contract BondedFungibleToken is Initializable, BFTEvents, BancorFormula, ERC20, 
 
     uint256 public heldContributions;
 
-    function initialize(
+    function init(
+        address _creator,
         string _name,
         string _symbol,
         address _rAsset,
-        uint256 _rrBuy,
-        uint256 _rrSell,
-        uint256 _rAsset,
+        uint32 _rrBuy,
+        uint32 _rrSell,
         uint256 _vSupply,
         uint256 _vReserve
     )   public
         initializer
     {
         ERC20Detailed.initialize(_name, _symbol, 18);
+        Ownable.initialize(_creator);
 
         reserveAsset = _rAsset;
         reserveRatioBuy = _rrBuy;
@@ -94,7 +96,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, BancorFormula, ERC20, 
 
         } else {
             uint256 userBalance = ERC20(reserveAsset).balanceOf(msg.sender);
-            require(_toSprend > userBalance);
+            require(_toSpend > userBalance);
             uint256 userApproved = ERC20(reserveAsset).allowance(msg.sender, address(this));
             require(userApproved >= _toSpend);
 
@@ -120,8 +122,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, BancorFormula, ERC20, 
             heldContributions = heldContributions.add(contribution);
             reserve = reserve.add(toReserve);
 
-            bool tokensMinted = _mint(msg.sender, tokensBought);
-            require(tokensMinted);
+            _mint(msg.sender, tokensBought);
 
             emit Bought(msg.sender, tokensBought, _toSpend);
             emit Contributed(msg.sender, contribution);
@@ -163,8 +164,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, BancorFormula, ERC20, 
 
         reserve = reserve.sub(reserveReturned);
 
-        bool tokensBurned = _burn(msg.sender, _toSell);
-        require(tokensBurned);
+        _burn(msg.sender, _toSell);
 
         if (reserveAsset == address(0x0)) {
             // TODO handle case of ether
