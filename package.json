@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "ganache": "ganache-cli --port 9545 --deterministic --gasLimit 10000000",
-    "test": "NODE_ENV=test truffle test",
+    "test": "NODE_ENV=test truffle test --network local",
     "test:target": "NODE_ENV=test truffle test test/BondedFungibleToken.js",
     "truffle:compile": "truffle compile",
     "truffle:migrate": "truffle migrate --network local",
