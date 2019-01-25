@@ -6,7 +6,7 @@
   "scripts": {
     "ganache": "ganache-cli --port 9545 --deterministic",
     "test": "NODE_ENV=test truffle test",
-    "test:target": "NODE_ENV=test truffle test test/LiquidityProvider.js",
+    "test:target": "NODE_ENV=test truffle test test/ConvergentBeta.js",
     "truffle:compile": "truffle compile",
     "truffle:migrate": "truffle migrate",
     "local:console": "npx truffle console --network local",

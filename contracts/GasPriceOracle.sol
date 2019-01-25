@@ -24,3 +24,18 @@ contract GasPriceOracle is Initializable, Ownable {
         return true;
     }
 }
+
+contract GasPriceValidator {
+    address public gasPriceOracle;
+
+    constructor(address _gpo) public {
+        gasPriceOracle = _gpo;
+    }
+
+    modifier validateGasPrice {
+        uint256 mgp = GasPriceOracle(gasPriceOracle).maxGasPrice();
+        require(mgp > 0);
+        require(tx.gasprice <= mgp);
+        _;
+    }
+}

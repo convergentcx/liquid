@@ -1,12 +1,20 @@
 pragma solidity ^0.4.24;
 
 import "openzeppelin-eth/contracts/token/ERC20/ERC20.sol";
+import "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol";
 import "openzeppelin-eth/contracts/math/SafeMath.sol";
 import "zos-lib/contracts/Initializable.sol";
 
 import "./bancor-contracts/converter/BancorFormula.sol";
 
-contract X is Initializable, BancorFormula, ERC20 {
+
+contract BFTEvents {
+    event Bought(address indexed buyer, uint256 amount, uint256 paid);
+    event Contributed(address indexed buyer, uint256 contribution);
+    event Sold(address indexed seller, uint256 amount, uint256 reserveReturned);
+}
+
+contract BondedFungibleToken is Initializable, BFTEvents, BancorFormula, ERC20, ERC20Detailed {
     using SafeMath for uint256;
 
     // Parts per million
@@ -21,27 +29,51 @@ contract X is Initializable, BancorFormula, ERC20 {
     uint256 public virtualSupply;
     uint256 public virtualReserve;
 
+    uint256 public heldContributions;
+
     function initialize(
-        _rrBuy,
-        _rrSell,
-        _rAsset
+        string _name,
+        string _symbol,
+        address _rAsset,
+        uint256 _rrBuy,
+        uint256 _rrSell,
+        uint256 _rAsset,
+        uint256 _vSupply,
+        uint256 _vReserve
     )   public
         initializer
     {
+        ERC20Detailed.initialize(_name, _symbol, 18);
+
+        reserveAsset = _rAsset;
         reserveRatioBuy = _rrBuy;
         reserveRatioSell = _rrSell;
         reserveAsset = _rAsset;
+        virtualSupply = _vSupply;
+        virtualReserve = _vReserve;
     }
 
-    function cost() public view returns (uint256) {}
+    function sendContributions() public returns (bool) {
+        if (reserveAsset == address(0x0)) {
+            address(owner()).transfer(heldContributions);
+            delete heldContributions;
+        } else {
+            ERC20(reserveAsset).transfer(owner(), heldContributions);
+            delete heldContributions;
+        }
+        require(heldContributions == 0);
+        return true;
+    }
 
-    function payout() public view returns (uint256) {}
+    // function cost() public view returns (uint256) {}
 
-    function currentBuy() public view returns (uint256) {}
+    // function payout() public view returns (uint256) {}
 
-    function currentSell() public view returns (uint256) {}
+    // function currentBuy() public view returns (uint256) {}
 
-    function marketCap() public view returns (uint256) {}
+    // function currentSell() public view returns (uint256) {}
+
+    // function marketCap() public view returns (uint256) {}
 
     function vSupply() internal view returns (uint256) {
         return virtualSupply.add(totalSupply());
@@ -91,8 +123,8 @@ contract X is Initializable, BancorFormula, ERC20 {
             bool tokensMinted = _mint(msg.sender, tokensBought);
             require(tokensMinted);
 
-            emit BOUGHT(msg.sender, tokensBought, _toSpend);
-            emit CONTRIBUTED(msg.sender, contribution);
+            emit Bought(msg.sender, tokensBought, _toSpend);
+            emit Contributed(msg.sender, contribution);
 
             return true;
         }
@@ -112,7 +144,7 @@ contract X is Initializable, BancorFormula, ERC20 {
         );
     }
 
-    function sell(uint256 _toSell)
+    function sell(uint256 _toSell, uint256 _expected, uint256 _maxSlippage)
         public returns (bool)
     {
         require(_toSell > 0);
@@ -141,12 +173,7 @@ contract X is Initializable, BancorFormula, ERC20 {
             require(transferred);
         }
 
-        emit SOLD(msg.sender, _toSell, reserveReturned);
+        emit Sold(msg.sender, _toSell, reserveReturned);
         return true;
     }
-
-    // TODO use
-    // Should use go to a communal pool in which we can issue
-    // shares out of? That might be a good idea, thanks to 
-    // Bentyn for it.
 }
