@@ -6,21 +6,21 @@ const Polynomial = artifacts.require('Polynomial');
 
 const { expect } = require('chai');
 
-// const { DECIMALS, PRECISION } = require('../lib/consts');
-const { toWei } = web3.utils;
+const { ERC20_DECIMALS, PT_DECIMALS, PT_PRECISION, PT_SCALE } = require('../lib/consts');
+const { fromWei, toWei, toBN } = web3.utils;
 
 const deploySimpleCurves = async () => {
   const buyCurve = await Polynomial.new(
+    1,
+    1,
+    1,
     1000,
-    1,
-    1,
-    1,
   );
   const sellCurve = await Polynomial.new(
+    1,
+    1,
+    1,
     500,
-    1,
-    1,
-    1,
   );
   return Curves.new(buyCurve.address, sellCurve.address);
 };
@@ -78,5 +78,11 @@ contract('LiquidityProvider', (accounts) => {
     expect(
       liquidToken
     ).to.equal(lt);
+  });
+
+  it('Tests some view functions', async () => {
+    const numTokens = toBN(2100).mul(PT_SCALE);
+    const cost = await lp.cost(numTokens.toString());
+    console.log(fromWei(cost.div(PT_PRECISION).toString()));
   });
 });

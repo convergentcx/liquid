@@ -8,6 +8,7 @@
     "test": "NODE_ENV=test truffle test",
     "test:target": "NODE_ENV=test truffle test test/LiquidityProvider.js",
     "truffle:compile": "truffle compile",
+    "truffle:migrate": "truffle migrate",
     "local:console": "npx truffle console --network local",
     "local:session": "zos session --network local --from 0x1df62f291b2e969fb0849d99d9ce41e2f137006e --expires 3600"
   },
@@ -25,7 +26,9 @@
   },
   "homepage": "https://github.com/convergentcx/smart-contracts#readme",
   "dependencies": {
+    "@0x/sol-compiler": "^2.0.2",
     "openzeppelin-eth": "^2.0.2",
+    "web3": "^1.0.0-beta.37",
     "zos-lib": "^2.1.0"
   },
   "devDependencies": {
