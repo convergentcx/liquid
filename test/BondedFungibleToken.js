@@ -55,10 +55,27 @@ contract('BondedFungibleToken', (accounts) => {
 
 
   it('Allows buying token', async () => {
-    await bft.buy(1000, 0, 0);
-    const retHeldContributions = await bft.heldContributions();
-    expect(heldContributions.toString()
-    ).to.equal('1000');
+    const toSpendTest = 1000
+    const retTotalSupply = await bft.totalSupply();
+    const retReserve = await bft.reserve();
+    const retReserveRatioBuy = await bft.reserveRatioBuy();
+    // await bft.buy();
+    // console.log(retTokensBought)
+    // await bft.buy(1000, 0, 0);
+    // const retHeldContributions = await bft.heldContributions();
+    // expect(retHeldContributions.toString()
+    // ).to.equal('1000');
+
+    // expect(bft.balanceOf(accounts[0]
+    // ).to.equal('1000');
+  });
+
+
+  it('Allows selling token', async () => {
+    // await bft.sell(1000);
+    // const retHeldContributions = await bft.heldContributions();
+    // expect(heldContributions.toString()
+    // ).to.equal('1000');
   });
 
   // it('Tests some view functions', async () => {

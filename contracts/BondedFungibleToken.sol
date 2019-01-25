@@ -39,8 +39,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         address _rAsset,
         uint32 _rrBuy, // represented in parts per million (1-1000000) 
         uint32 _rrSell, // represented in parts per million (1-1000000)
-        uint256 _vSupply,
-        uint256 _vReserve
+        uint256 _vSupply, // what is this good for?
+        uint256 _vReserve // what is this good for?
     )   public
         initializer
     {
@@ -117,7 +117,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
                 );
             }
 
-            uint256 toReserve = calcReserveAmount(_toSpend);
+            uint256 toReserve = calcReserveAdd(_toSpend);
             uint256 contribution = _toSpend.sub(toReserve);
             heldContributions = heldContributions.add(contribution);
             reserve = reserve.add(toReserve);
@@ -134,7 +134,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     /**
      * @dev Syntax Sugar over the lower curve purchase amount 
      */
-    function calcReserveAmount(uint256 _toSpend)
+    function calcReserveAdd(uint256 _toSpend) // calcReserveAmount is a confusing name
         internal view returns (uint256)
     {
         return calculatePurchaseReturn(
@@ -145,7 +145,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         );
     }
 
-    function sell(uint256 _toSell, uint256 _expected, uint256 _maxSlippage)
+    function sell(uint256 _toSell) // this doesn't need expected & slippage
         public returns (bool)
     {
         require(_toSell > 0);
