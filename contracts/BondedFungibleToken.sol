@@ -119,7 +119,10 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
             //     );
             // }
 
-            // uint256 toReserve = calcReserveAdd(_toSpend);
+            // calcReserveAdd uses calculatePurchaseReturn which is the wrong function..
+            // this is the same error from before - we need a bit more steps to calculate the correct contribution amount
+
+            // uint256 toReserve = calcReserveAdd(_toSpend);  
             // uint256 contribution = _toSpend.sub(toReserve);
             // heldContributions = heldContributions.add(contribution);
             // reserve = reserve.add(toReserve);
