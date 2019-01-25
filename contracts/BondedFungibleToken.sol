@@ -19,7 +19,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     using SafeMath for uint256;
 
     // Parts per million
-    uint24 public constant PPM = 1000000;
+    uint24 public constant PPM = 1000000; // this is not allowed in upgradeable contracts because the proxy will not know the value of PPM
 
     uint32 public reserveRatioBuy;
     uint32 public reserveRatioSell;
@@ -37,8 +37,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         string _name,
         string _symbol,
         address _rAsset,
-        uint32 _rrBuy,
-        uint32 _rrSell,
+        uint32 _rrBuy, // represented in parts per million (1-1000000) 
+        uint32 _rrSell, // represented in parts per million (1-1000000)
         uint256 _vSupply,
         uint256 _vReserve
     )   public

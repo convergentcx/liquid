@@ -24,42 +24,35 @@ contract('BondedFungibleToken', (accounts) => {
     mERC20 = await deployMockERC20(toWei('1', 'ether')); // why is the argument ether here? this is a generic ERC20, so the supply should just be a number
     expect(mERC20.address).to.exist;
 
-    // bft = await BFT.new()
-    // expect(bft.address).to.exist;
-
-    // await lp.initialize(curves.address, mERC20.address);
-    // lt = await lp.liquidToken();
-    // expect(lt).to.exist;
+    bft = await BFT.new()
+    expect(bft.address).to.exist;
+    await bft.init(accounts[0], 'Achill', 'ACT', mERC20.address, 500000, 200000, 0, 0);
   });
 
   it('Returns expected parameters on initialization', async () => {
-    // const ppm = await bft.PPM();
-    // expect(
-    //   ppm
-    // ).to.equal(1000000);
+    const ppm = await bft.PPM();
+    const reserveAsset = await bft.reserveAsset();
+    const name = await bft.name();
+    const owner = await bft.owner();
+    expect(
+      ppm.toNumber()
+    ).to.equal(1000000);
     expect(mERC20.address).to.exist;
+    expect(reserveAsset).to.equal(mERC20.address);
+    expect(name).to.equal('Achill');
+    expect(owner).to.equal(accounts[0]);
 
+    const reserve = await bft.reserve();
+    expect(
+      reserve.toString()
+    ).to.equal('0');
+
+    const heldContributions = await bft.heldContributions();
+    expect(
+      heldContributions.toString()
+    ).to.equal('0');
   });
-  //   const reserve = await lp.reserve();
-  //   expect(
-  //     reserve.toString()
-  //   ).to.equal('0');
 
-  //   const retCurves = await lp.curves();
-  //   expect(
-  //     retCurves
-  //   ).to.equal(curves.address);
-
-  //   const heldContributions = await lp.heldContributions();
-  //   expect(
-  //     heldContributions.toString()
-  //   ).to.equal('0');
-
-  //   const liquidToken = await lp.liquidToken();
-  //   expect(
-  //     liquidToken
-  //   ).to.equal(lt);
-  // });
 
   // it('Tests some view functions', async () => {
   //   const numTokens = toBN(2100).mul(PT_SCALE);
