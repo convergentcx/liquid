@@ -23,17 +23,17 @@ contract("BondedFungibleToken", (accounts) => {
       "Bonded Fungible Token One",
       "BFT1",
       mERC20.address,
+      333333,
       500000,
-      500000,
-      toWei('100', 'ether'),
-      toWei('5', 'ether'),
+      toWei('1', 'ether'),
+      toWei('0.333', 'ether'),
     );
   });
 
   it('runs', async () => {
     await mERC20.approve(bft.address, toWei('20000000'));
 
-    const pr = await bft.purchaseReturn(toWei('495', 'ether'));
+    const pr = await bft.purchaseReturn(toWei('333.333', 'ether'));
     console.log(fromWei(pr));
   });
 });

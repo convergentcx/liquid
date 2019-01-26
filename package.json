@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "ganache": "ganache-cli --port 9545 --deterministic --gasLimit 8000000",
-    "test": "NODE_ENV=test truffle test --network local",
+    "test": "NODE_ENV=test truffle test test/BancorAdaptor.js --network local",
     "truffle:compile": "truffle compile",
     "local:migrate": "truffle migrate --network local",
     "local:console": "npx truffle console --network local",

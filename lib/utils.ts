@@ -16,6 +16,10 @@ const getN = (rr: Decimal, precision: Decimal): Decimal => {
   return precision.div(rr).minus(1);
 };
 
+// console.log(
+//   getN(toDecimal(333333), toDecimal(1000000)).toString()
+// )
+
 assert(
   getN(toDecimal(500000), toDecimal(1000000)).toString() === '1'
 );
@@ -57,21 +61,56 @@ class Polynomial {
   }
 }
 
+type VirtualParams = { vSupply: Decimal, vReserve: Decimal };
+
+const getVirtualParams = (n: Decimal, m: Decimal): VirtualParams => {
+  // First try setting vReserve to 1 and calculating vSupply
+  let vReserve = toDecimal(1);
+  let vSupply = (() => {
+    const nexp: Decimal = n.add(toDecimal(1));
+    return (nexp.div(m)).pow((toDecimal(1).div(nexp))); 
+  })();
+
+  // If vSupply is less than 1 whole unit it means that the slope
+  // is too steep to calculate this way and we try to do it 
+  // in the reserve manner by setting vSupply to 1 and calculating
+  // vReserve
+  if (vSupply.lessThan(toDecimal(1))) {
+    vSupply = toDecimal(1);
+    vReserve = (() => {
+      const nexp: Decimal = n.add(toDecimal(1));
+      return (m.div(nexp)).mul((toDecimal(1).pow(nexp)));
+    })();
+  }
+
+  return {
+    vSupply,
+    vReserve,
+  };
+}
+
 const poly = new Polynomial(
-  toDecimal('0.5'),
-  toDecimal('0.001'),
+  toDecimal('2'),
+  toDecimal('1'),
 );
 
-console.log(poly.integral(toDecimal(1000)).toString());
 
-console.log(
-  getM(
-    toDecimal(100),
-    toDecimal(5),
-    toDecimal(500000),
-    toDecimal(1000000)
-  ).toString()
+const res = getVirtualParams(
+  toDecimal(1),
+  toDecimal("0.001"),
 );
+
+console.log('vSupply:', res.vSupply.toString(), 'vReserve:', res.vReserve.toString());
+// console.log(poly.integral(toDecimal(1)).toString());
+
+// console.log(
+//   getM(
+//     toDecimal(1),
+//     toDecimal(1),
+//     toDecimal(333333),
+//     toDecimal(1000000)
+//   ).toString()
+// );
 
 export default {
   getN,

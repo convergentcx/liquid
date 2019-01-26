@@ -6,8 +6,8 @@ import "openzeppelin-eth/contracts/ownership/Ownable.sol";
 import "openzeppelin-eth/contracts/math/SafeMath.sol";
 import "zos-lib/contracts/Initializable.sol";
 
+import "./BancorAdaptor.sol";
 import "./bancor-contracts/converter/BancorFormula.sol";
-
 
 contract BFTEvents {
     event Bought(address indexed buyer, uint256 amount, uint256 paid);
@@ -32,6 +32,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
 
     uint256 public heldContributions;
 
+    BancorAdaptor public sellAdaptor;
+
     function init(
         address _creator,
         string _name,
@@ -53,6 +55,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         reserveAsset = _rAsset;
         virtualSupply = _vSupply;
         virtualReserve = _vReserve;
+
+        sellAdaptor = new BancorAdaptor(_rrSell, 10, _vSupply, _vReserve);
 
         PPM = 1000000;
     }
@@ -121,10 +125,10 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
                 );
             }
 
-            // uint256 toReserve = calcReserveAmount(_toSpend);
-            // uint256 contribution = _toSpend.sub(toReserve);
-            // heldContributions = heldContributions.add(contribution);
-            // reserve = reserve.add(toReserve);
+            uint256 toReserve = calcReserveAmount(tokensBought);
+            uint256 contribution = _toSpend.sub(toReserve);
+            heldContributions = heldContributions.add(contribution);
+            reserve = reserve.add(toReserve);
 
             _mint(msg.sender, tokensBought);
 
@@ -138,15 +142,17 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     /**
      * @dev Syntax Sugar over the lower curve purchase amount 
      */
-    function calcReserveAmount(uint256 _toSpend)
+    function calcReserveAmount(uint256 _addedTokens)
         internal view returns (uint256)
     {
-        return BancorFormula.calculatePurchaseReturn(
-            vSupply(),
-            vReserve(),
-            reserveRatioSell,
-            _toSpend
+        int256 integralBefore = sellAdaptor.integral(vSupply());
+        int256 integralAfter = sellAdaptor.integral(_addedTokens.add(vSupply()));
+        int256 amount = integralAfter - integralBefore;
+        require(
+            amount > 0,
+            "Failed to calculate reserve amount"
         );
+        return uint256(amount);
     }
 
     function sell(uint256 _toSell, uint256 _expected, uint256 _maxSlippage)
@@ -159,7 +165,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
             userBalance >= _toSell
         );
 
-        uint256 reserveReturned = BancorFormula.calculateSaleReturn(
+        uint256 reserveReturned = calculateSaleReturn(
             vSupply(),
             vReserve(),
             reserveRatioSell,
