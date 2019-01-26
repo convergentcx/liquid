@@ -30,6 +30,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
 
     uint256 public heldContributions;
 
+    uint24 public PPM;
+
     function init(
         address _creator,
         string _name,
@@ -52,7 +54,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         virtualSupply = _vSupply;
         virtualReserve = _vReserve;
 
-        uint24 public constant PPM = 1000000;
+        PPM = 1000000;
 
     }
 

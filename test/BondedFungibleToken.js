@@ -6,6 +6,28 @@ const { expect } = require('chai');
 const { ERC20_DECIMALS, PT_DECIMALS, PT_PRECISION, PT_SCALE } = require('../lib/consts');
 const { fromWei, toWei, toBN } = web3.utils;
 
+// ATTENTION THE FORMULAS BELOW DO NOT WORK IN PRACTICE, BECAUSE OF JS PRECISION PROBLEMS
+// the scripts Logan wrote help us get m and n from the bancor formula
+// using those values we can now get the minimum "virtualMint" that initializes the curve on a negligibly higher level
+// (without distorting the slope) in order to circumvent the problem that Bancor formula doesn't work when supply and reserve equal 0.
+getVirtualParams = (m, n) => {
+  // first approach (for most cases, because usually curves start flat): 
+  // A. set vReserve to the smallest acceptable value which is 1 (= 1 x fullERC20 token/10^18)
+  // B. set vSupply to the token amount which if bought would have led to that reserve being in the contract
+  // (again expressed in granular units of fullERC20/10^18)
+  let vReserve = 1;
+  let vSupply = (((n+1)/(m*10**18))^(1/(n+1)))*10**18; // this can be reverse calculated by setting the integral of a mx^n function to 1 with the appropriate decimals
+  // but if the curve is very steep, the token amount needed to get 1 unit of reserve could be smaller than 1!
+  // then we need to go the other way around:
+  // A) set the virtual token amount to the smallest possible acceptable value namely 1
+  // B) calculate the corresponding reserve, which will necessarily be bigger than 1 since the price function is always increasing (m>0):
+  if (vSupply < 1) {
+    vSupply = 1;
+    vReserve = (m/(n+1))*((1/10**18)^(n+1));
+  }
+  // console.log('vSupply: ', vSupply, 'vReserve: ', vReserve);
+  return vSupply, vReserve;
+}
 
 const deployMockERC20 = async (supply) => {
   const mock = await MockERC20.new(supply);
@@ -22,7 +44,7 @@ contract('BondedFungibleToken', (accounts) => {
 
   before(async () => {
     const userReserveBalance = 1000000
-    mERC20 = await deployMockERC20(userReserveBalance); // why was the argument expressed in wei here? this is a generic ERC20, so the supply should just be a number
+    mERC20 = await deployMockERC20(userReserveBalance); // needs to be expressed with 10^18 decimals
     expect(mERC20.address).to.exist;
     const retUserReserveBalance = await mERC20.balanceOf(accounts[0]);
     expect(
@@ -31,7 +53,8 @@ contract('BondedFungibleToken', (accounts) => {
 
     bft = await BFT.new()
     expect(bft.address).to.exist;
-    await bft.init(accounts[0], 'Achill', 'ACT', mERC20.address, 500000, 200000, 0, 0);
+    // get virtualParams here, to stick in instead of 0, 0:
+    await bft.init(accounts[0], 'Achill', 'ACT', mERC20.address, 333333, 200000, 0, 0);
 
     // approve bft to spend user's ERC20 reserve asset
     const reserveApproval = 1000;
