@@ -16,14 +16,14 @@ getVirtualParams = (m, n) => {
   // B. set vSupply to the token amount which if bought would have led to that reserve being in the contract
   // (again expressed in granular units of fullERC20/10^18)
   let vReserve = 1;
-  let vSupply = (((n+1)/(m*10**18))^(1/(n+1)))*10**18; // this can be reverse calculated by setting the integral of a mx^n function to 1 with the appropriate decimals
+  let vSupply = (((n + 1) / (m * 10 ** 18)) ^ (1 / (n + 1))) * 10 ** 18; // this can be reverse calculated by setting the integral of a mx^n function to 1 with the appropriate decimals
   // but if the curve is very steep, the token amount needed to get 1 unit of reserve could be smaller than 1!
   // then we need to go the other way around:
   // A) set the virtual token amount to the smallest possible acceptable value namely 1
   // B) calculate the corresponding reserve, which will necessarily be bigger than 1 since the price function is always increasing (m>0):
   if (vSupply < 1) {
     vSupply = 1;
-    vReserve = (m/(n+1))*((1/10**18)^(n+1));
+    vReserve = (m / (n + 1)) * ((1 / 10 ** 18) ^ (n + 1));
   }
   // console.log('vSupply: ', vSupply, 'vReserve: ', vReserve);
   return vSupply, vReserve;
@@ -43,7 +43,7 @@ contract('BondedFungibleToken', (accounts) => {
   let bft, mERC20;
 
   before(async () => {
-    const userReserveBalance = 1000000000000;
+    const userReserveBalance = 10000000000000;
     mERC20 = await deployMockERC20(userReserveBalance); // needs to be expressed with 10^18 decimals
     expect(mERC20.address).to.exist;
     const retUserReserveBalance = await mERC20.balanceOf(accounts[0]);
@@ -59,7 +59,7 @@ contract('BondedFungibleToken', (accounts) => {
     await bft.init(accounts[0], 'Achill', 'ACT', mERC20.address, 333333, 333333, 2466212074330, 1, 2603499175330, 1);
 
     // approve bft to spend user's ERC20 reserve asset
-    const reserveApproval = 1000000000000;
+    const reserveApproval = 10000000000000;
     await mERC20.approve(bft.address, reserveApproval);
 
   });
@@ -112,23 +112,23 @@ contract('BondedFungibleToken', (accounts) => {
 
 
   it('Allows buying token', async () => {
-    const toSpendTest = 1000000000000;
-    // const retTotalSupply = await bft.totalSupply();
-    // const retReserve = await bft.reserve();
-    // const retReserveRatioBuy = await bft.reserveRatioBuy();
-    
+    const toSpendTest = 10000000000000;
     await bft.buy(toSpendTest, 0, 0);
-    const retReserve = await bft.reserve();
-    expect(retReserve.toString()
-    ).to.equal('1');
-
-    const retHeldContributions = await bft.heldContributions();
-    expect(retHeldContributions.toString()
-    ).to.equal('999');
+    // const retHeldContributions = await bft.heldContributions();
+    // expect(retHeldContributions.toString()
+    // ).to.equal('999');
 
     const userBalance = await bft.balanceOf(accounts[0])
     expect(userBalance.toString()
-    ).to.equal('30');
+    ).to.equal('53129932096307017'); // calculated by solving for x with integral: 53132900000000000, but too big to use as number and do closeTo
+
+    const retTotalSupply = await bft.totalSupply();
+    expect(retTotalSupply.toString()
+    ).to.equal('53129932096307017'); 
+
+    const retReserve = await bft.reserve();
+    expect(retReserve.toString()
+    ).to.equal('1');
   });
 
 

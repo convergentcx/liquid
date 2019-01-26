@@ -20,7 +20,7 @@ contract('BancorFormula', (accounts) => {
         expect(
             retPurchaseAmount.toNumber()
         ).to.be.closeTo(244153941835234, 10000000000); // calculated using integration or slava's method
-    });
+    })
     
     it('Calculates sale return correctly', async () => {
         const totalSupplyTest = 10000000000000; 
@@ -33,6 +33,8 @@ contract('BancorFormula', (accounts) => {
         expect(
             retSaleReturn.toNumber()
         ).to.be.closeTo(15, 1); // calculated using integration or slava's method
+
+        const otherSaleReturn = await bancor.calculateSaleReturn(53129932096307017+2603499175330, )
     });
 
 

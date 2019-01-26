@@ -137,7 +137,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
                 );
             }
 
-            uint256 toReserve = calcAmountToReserve(_toSpend);  
+            uint256 toReserve = calcAmountToReserve(_toSpend, tokensBought);  
             uint256 contribution = _toSpend.sub(toReserve);
             heldContributions = heldContributions.add(contribution);
             reserve = reserve.add(toReserve);
@@ -154,21 +154,14 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     /**
      * @dev Syntax Sugar over the lower curve purchase amount 
      */
-    function calcAmountToReserve(uint256 _toSpend)
-        internal view returns (uint256)
+    function calcAmountToReserve(uint256 _toSpend, uint256 _newTokens) public view returns (uint256)
     {
-        uint256 newTokens = calculatePurchaseReturn(
-            vSupplyBuy(),
-            vReserveBuy(),
-            reserveRatioBuy,
-            _toSpend
-        );
 
         return calculateSaleReturn(
-            vSupplySell() + newTokens, 
-            vReserveSell(), 
+            vSupplySell() + _newTokens, 
+            vReserveSell(), // this is wrong, we need to know the vReserveSell at vSupplySell() + _newTokens -- which is kind of what we are trying to calculate here
             reserveRatioSell, 
-            newTokens
+            _newTokens
         );
 
     }
