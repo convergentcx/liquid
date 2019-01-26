@@ -19,20 +19,20 @@ contract('BancorFormula', (accounts) => {
 
         expect(
             retPurchaseAmount.toNumber()
-        ).to.be.closeTo(244153941835234, 100000000000); // calculated using integration or slava's method
+        ).to.be.closeTo(244153941835234, 10000000000); // calculated using integration or slava's method
     });
     
     it('Calculates sale return correctly', async () => {
-        const totalSupplyTest = 2603499175330 + 10000000000000; 
-        const reserveTest = 1;
+        const totalSupplyTest = 10000000000000; 
+        const reserveTest = 56;
         const reserveRatioSellTest = 333333;
-        const toSellTest = 10000000000000
+        const toSellTest = 1000000000000;
 
         const retSaleReturn = await bancor.calculateSaleReturn(totalSupplyTest, reserveTest, reserveRatioSellTest, toSellTest)
 
         expect(
             retSaleReturn.toNumber()
-        ).to.be.closeTo(112, 10); // calculated using integration or slava's method
+        ).to.be.closeTo(15, 1); // calculated using integration or slava's method
     });
 
 
