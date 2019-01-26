@@ -28,8 +28,10 @@ contract Account is Initializable {
         address _rAsset,
         uint32 _rrBuy,
         uint32 _rrSell,
-        uint256 _vSupply,
-        uint256 _vReserve
+        uint256 _vSupplyBuy,
+        uint256 _vReserveBuy,
+        uint256 _vSupplySell,
+        uint256 _vReserveSell
     )   initializer
         public
     {
@@ -43,8 +45,10 @@ contract Account is Initializable {
             _rAsset,
             _rrBuy,
             _rrSell,
-            _vSupply,
-            _vReserve
+            _vSupplyBuy,
+            _vReserveBuy,
+            _vSupplySell,
+            _vReserveSell
         );
 
         emit MetadataUpdated(_metadata);

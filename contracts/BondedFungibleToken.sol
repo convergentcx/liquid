@@ -25,8 +25,10 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     address public reserveAsset;
     uint256 public reserve;
 
-    uint256 public virtualSupply;
-    uint256 public virtualReserve;
+    uint256 public virtualSupplyBuy;
+    uint256 public virtualReserveBuy;
+    uint256 public virtualSupplySell;
+    uint256 public virtualReserveSell;
 
     uint256 public heldContributions;
 
@@ -39,8 +41,10 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         address _rAsset,
         uint32 _rrBuy,
         uint32 _rrSell,
-        uint256 _vSupply,
-        uint256 _vReserve
+        uint256 _vSupplyBuy,
+        uint256 _vReserveBuy,
+        uint256 _vSupplySell,
+        uint256 _vReserveSell
     )   public
         initializer
     {
@@ -51,8 +55,10 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         reserveRatioBuy = _rrBuy;
         reserveRatioSell = _rrSell;
         reserveAsset = _rAsset;
-        virtualSupply = _vSupply;
-        virtualReserve = _vReserve;
+        virtualSupplyBuy = _vSupplyBuy;
+        virtualReserveBuy = _vReserveBuy;
+        virtualSupplySell = _vSupplySell;
+        virtualReserveSell = _vReserveSell;
 
         PPM = 1000000;
 
@@ -80,13 +86,22 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
 
     // function marketCap() public view returns (uint256) {}
 
-    function vSupply() internal view returns (uint256) {
-        return virtualSupply.add(totalSupply());
+    function vSupplyBuy() internal view returns (uint256) {
+        return virtualSupplyBuy.add(totalSupply());
     }
 
-    function vReserve() internal view returns (uint256) {
-        return virtualReserve.add(reserve);
+    function vReserveBuy() internal view returns (uint256) {
+        return virtualReserveBuy.add(reserve);
     }
+
+    function vSupplySell() internal view returns (uint256) {
+        return virtualSupplySell.add(totalSupply());
+    }
+
+    function vReserveSell() internal view returns (uint256) {
+        return virtualReserveSell.add(reserve);
+    }
+
 
     function buy(uint256 _toSpend, uint256 _expected, uint256 _maxSlippage)
         public returns (bool)
@@ -109,8 +124,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
             // @dev: calculatePurchaseReturn causes an error when supply/reserve are 0! => setting them to 1 for now
 
             uint256 tokensBought = calculatePurchaseReturn(
-                1,
-                1,
+                vSupplyBuy(),
+                vReserveBuy(),
                 reserveRatioBuy,
                 _toSpend
             );
@@ -121,9 +136,6 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
                     tokensBought >= (_expected.sub(_maxSlippage))
                 );
             }
-
-            // calcReserveAdd uses calculatePurchaseReturn which is the wrong function..
-            // this is the same error from before - we need a bit more steps to calculate the correct contribution amount
 
             uint256 toReserve = calcAmountToReserve(_toSpend);  
             uint256 contribution = _toSpend.sub(toReserve);
@@ -146,13 +158,18 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         internal view returns (uint256)
     {
         uint256 newTokens = calculatePurchaseReturn(
-            1,
-            1,
+            vSupplyBuy(),
+            vReserveBuy(),
             reserveRatioBuy,
             _toSpend
         );
 
-        return calculateSaleReturn(vSupply() + newTokens, 1, reserveRatioSell, newTokens);
+        return calculateSaleReturn(
+            vSupplySell() + newTokens, 
+            vReserveSell(), 
+            reserveRatioSell, 
+            newTokens
+        );
 
     }
 
@@ -167,8 +184,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         );
 
         uint256 reserveReturned = calculateSaleReturn(
-            vSupply(),
-            vReserve(),
+            vSupplySell(),
+            vReserveSell(),
             reserveRatioSell,
             _toSell
         );

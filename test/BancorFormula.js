@@ -10,29 +10,29 @@ contract('BancorFormula', (accounts) => {
 
 
     it('Calculates purchase amount correctly', async () => {
-        const totalSupplyTest = 10000;
-        const reserveTest = 100;
-        const reserveRatioBuyTest = 500000;
-        const toSpendTest = 1000
+        const totalSupplyTest = 2466212074330;
+        const reserveTest = 1;
+        const reserveRatioBuyTest = 333333;
+        const toSpendTest = 1000000;
 
         const retPurchaseAmount = await bancor.calculatePurchaseReturn(totalSupplyTest, reserveTest, reserveRatioBuyTest, toSpendTest)
 
         expect(
             retPurchaseAmount.toNumber()
-        ).to.equal(23166);
+        ).to.be.closeTo(244153941835234, 100000000000); // calculated using integration or slava's method
     });
-
+    
     it('Calculates sale return correctly', async () => {
-        const totalSupplyTest = 10000;
-        const reserveTest = 100;
-        const reserveRatioBuyTest = 500000;
-        const toSellTest = 1000
+        const totalSupplyTest = 2603499175330 + 10000000000000; 
+        const reserveTest = 1;
+        const reserveRatioSellTest = 333333;
+        const toSellTest = 10000000000000
 
-        const retSaleReturn = await bancor.calculateSaleReturn(totalSupplyTest, reserveTest, reserveRatioBuyTest, toSellTest)
+        const retSaleReturn = await bancor.calculateSaleReturn(totalSupplyTest, reserveTest, reserveRatioSellTest, toSellTest)
 
         expect(
             retSaleReturn.toNumber()
-        ).to.equal(18);
+        ).to.be.closeTo(112, 10); // calculated using integration or slava's method
     });
 
 

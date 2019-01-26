@@ -43,7 +43,7 @@ contract('BondedFungibleToken', (accounts) => {
   let bft, mERC20;
 
   before(async () => {
-    const userReserveBalance = 1000000
+    const userReserveBalance = 1000000000000;
     mERC20 = await deployMockERC20(userReserveBalance); // needs to be expressed with 10^18 decimals
     expect(mERC20.address).to.exist;
     const retUserReserveBalance = await mERC20.balanceOf(accounts[0]);
@@ -53,11 +53,13 @@ contract('BondedFungibleToken', (accounts) => {
 
     bft = await BFT.new()
     expect(bft.address).to.exist;
-    // get virtualParams here, to stick in instead of 0, 0:
-    await bft.init(accounts[0], 'Achill', 'ACT', mERC20.address, 333333, 200000, 0, 0);
+    // get virtualParams here, to stick in instead of 3162277660/3429971703, 1:
+    // for now set m=0.2 and n=2 => rrBuy=1/3 for buy
+    // and m=0.17 and n=2 => rrSell=1/3 for sell
+    await bft.init(accounts[0], 'Achill', 'ACT', mERC20.address, 333333, 333333, 2466212074330, 1, 2603499175330, 1);
 
     // approve bft to spend user's ERC20 reserve asset
-    const reserveApproval = 1000;
+    const reserveApproval = 1000000000000;
     await mERC20.approve(bft.address, reserveApproval);
 
   });
@@ -67,6 +69,8 @@ contract('BondedFungibleToken', (accounts) => {
     const retReserveAsset = await bft.reserveAsset();
     const retName = await bft.name();
     const retOwner = await bft.owner();
+    const totalSupply = await bft.totalSupply();
+
     expect(
       retPpm.toNumber()
     ).to.equal(1000000);
@@ -74,6 +78,26 @@ contract('BondedFungibleToken', (accounts) => {
     expect(retReserveAsset).to.equal(mERC20.address);
     expect(retName).to.equal('Achill');
     expect(retOwner).to.equal(accounts[0]);
+    expect(totalSupply.toString()).to.equal('0');
+
+
+    const virtualSupplyBuy = await bft.virtualSupplyBuy();
+    const virtualSupplySell = await bft.virtualSupplySell();
+    const virtualReserveBuy = await bft.virtualReserveBuy();
+    const virtualReserveSell = await bft.virtualReserveSell();
+
+    expect(
+      virtualSupplyBuy.toString()
+    ).to.equal('2466212074330');
+    expect(
+      virtualSupplySell.toString()
+    ).to.equal('2603499175330');
+    expect(
+      virtualReserveBuy.toString()
+    ).to.equal('1');
+    expect(
+      virtualReserveSell.toString()
+    ).to.equal('1');
 
     const reserve = await bft.reserve();
     expect(
@@ -88,7 +112,7 @@ contract('BondedFungibleToken', (accounts) => {
 
 
   it('Allows buying token', async () => {
-    const toSpendTest = 1000
+    const toSpendTest = 1000000000000;
     // const retTotalSupply = await bft.totalSupply();
     // const retReserve = await bft.reserve();
     // const retReserveRatioBuy = await bft.reserveRatioBuy();
