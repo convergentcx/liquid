@@ -1,28 +1,18 @@
-const ExponentLib = artifacts.require('ExponentLib');
-const FixidityLib = artifacts.require('FixidityLib');
-const LogarithmLib = artifacts.require('LogarithmLib');
+const BancorFormula = artifacts.require('BancorFormula');
+const BondedFungibleToken = artifacts.require('BondedFungibleToken');
 const Migrations = artifacts.require('Migrations');
-const Polynomial = artifacts.require('Polynomial');
+const SafeMath = artifacts.require('SafeMath');
 
 module.exports = async deployer => {
   /// Migrations
   await deployer.deploy(Migrations);
 
-  /// FixidityLib
-  await deployer.deploy(FixidityLib);
+  /// SafeMath
+  await deployer.deploy(SafeMath);
 
-  /// LogarithmLib
-  await deployer.link(FixidityLib, LogarithmLib);
-  await deployer.deploy(LogarithmLib);
+  await deployer.deploy(BancorFormula);
 
-  /// ExponentLib
-  await deployer.link(FixidityLib, ExponentLib);
-  await deployer.link(LogarithmLib, ExponentLib);
-  await deployer.deploy(ExponentLib);
-
-  /// Polynomial
-  await deployer.link(FixidityLib, Polynomial);
-  await deployer.link(LogarithmLib, Polynomial);
-  await deployer.link(ExponentLib, Polynomial);
-  await deployer.deploy(Polynomial, 1, 1, 1, 1);
+  /// BondedFungibleToken
+  await deployer.link(SafeMath, BondedFungibleToken);
+  await deployer.deploy(BondedFungibleToken);
 }

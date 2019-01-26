@@ -19,7 +19,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     using SafeMath for uint256;
 
     // Parts per million
-    uint24 public constant PPM = 1000000;
+    uint24 public PPM;
 
     uint32 public reserveRatioBuy;
     uint32 public reserveRatioSell;
@@ -53,6 +53,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         reserveAsset = _rAsset;
         virtualSupply = _vSupply;
         virtualReserve = _vReserve;
+
+        PPM = 1000000;
     }
 
     function sendContributions() public returns (bool) {
@@ -67,7 +69,14 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         return true;
     }
 
-    // function cost() public view returns (uint256) {}
+    function purchaseReturn(uint256 _toSpend) public view returns (uint256) {
+        return calculatePurchaseReturn(
+            vSupply(),
+            vReserve(),
+            reserveRatioBuy,
+            _toSpend
+        );
+    }
 
     // function payout() public view returns (uint256) {}
 
@@ -91,24 +100,19 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         require(_toSpend > 0);
 
         if (reserveAsset == address(0x0)) {
-            require(_toSpend >= msg.value);
+            require(msg.value >= _toSpend);
             // TODO: handle the case of ether
 
         } else {
             uint256 userBalance = ERC20(reserveAsset).balanceOf(msg.sender);
-            require(_toSpend > userBalance);
+            require(userBalance >= userBalance);
             uint256 userApproved = ERC20(reserveAsset).allowance(msg.sender, address(this));
             require(userApproved >= _toSpend);
 
             bool reserveTransferred = ERC20(reserveAsset).transferFrom(msg.sender, address(this), _toSpend);
             require(reserveTransferred);
 
-            uint256 tokensBought = calculatePurchaseReturn(
-                vSupply(),
-                vReserve(),
-                reserveRatioBuy,
-                _toSpend
-            );
+            uint256 tokensBought = purchaseReturn(_toSpend);
 
             // If expected is set check that it hasn't slipped
             if (_expected > 0) {
@@ -117,15 +121,15 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
                 );
             }
 
-            uint256 toReserve = calcReserveAmount(_toSpend);
-            uint256 contribution = _toSpend.sub(toReserve);
-            heldContributions = heldContributions.add(contribution);
-            reserve = reserve.add(toReserve);
+            // uint256 toReserve = calcReserveAmount(_toSpend);
+            // uint256 contribution = _toSpend.sub(toReserve);
+            // heldContributions = heldContributions.add(contribution);
+            // reserve = reserve.add(toReserve);
 
             _mint(msg.sender, tokensBought);
 
             emit Bought(msg.sender, tokensBought, _toSpend);
-            emit Contributed(msg.sender, contribution);
+            // emit Contributed(msg.sender, contribution);
 
             return true;
         }
@@ -137,7 +141,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     function calcReserveAmount(uint256 _toSpend)
         internal view returns (uint256)
     {
-        return calculatePurchaseReturn(
+        return BancorFormula.calculatePurchaseReturn(
             vSupply(),
             vReserve(),
             reserveRatioSell,
@@ -155,7 +159,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
             userBalance >= _toSell
         );
 
-        uint256 reserveReturned = calculateSaleReturn(
+        uint256 reserveReturned = BancorFormula.calculateSaleReturn(
             vSupply(),
             vReserve(),
             reserveRatioSell,
