@@ -1,5 +1,7 @@
 const MockERC20 = artifacts.require('MockERC20');
 const BFT = artifacts.require('BondedFungibleToken');
+const BancorFormula = artifacts.require('BancorFormula');
+
 
 const { expect } = require('chai');
 
@@ -51,12 +53,15 @@ contract('BondedFungibleToken', (accounts) => {
       retUserReserveBalance.toNumber()
     ).to.equal(userReserveBalance);
 
+    bancorFormula = await BancorFormula.new();
+    expect(bancorFormula.address).to.exist;
+
     bft = await BFT.new()
     expect(bft.address).to.exist;
-    // get virtualParams here, to stick in instead of 3162277660/3429971703, 1:
+    // get virtualParams here, to stick in instead of 2466212074330/2603499175330, 1:
     // for now set m=0.2 and n=2 => rrBuy=1/3 for buy
     // and m=0.17 and n=2 => rrSell=1/3 for sell
-    await bft.init(accounts[0], 'Achill', 'ACT', mERC20.address, 333333, 333333, 2466212074330, 1, 2603499175330, 1);
+    await bft.init(accounts[0], 'Achill', 'ACT', mERC20.address, 333333, 333333, 2466212074330, 1, 2603499175330, 1, bancorFormula.address);
 
     // approve bft to spend user's ERC20 reserve asset
     const reserveApproval = 10000000000000;

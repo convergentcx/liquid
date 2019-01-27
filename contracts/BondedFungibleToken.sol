@@ -15,7 +15,7 @@ contract BFTEvents {
     event Sold(address indexed seller, uint256 amount, uint256 reserveReturned);
 }
 
-contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula, ERC20, ERC20Detailed {
+contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20Detailed {
     using SafeMath for uint256;
 
     // Parts per million
@@ -34,6 +34,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
 
     uint256 public heldContributions;
 
+    BancorFormula public bancorFormula;
     BancorAdaptor public sellAdaptor;
 
     function init(
@@ -46,7 +47,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         uint256 _vSupplyBuy,
         uint256 _vReserveBuy,
         uint256 _vSupplySell,
-        uint256 _vReserveSell
+        uint256 _vReserveSell,
+        address _bancorFormulaAddress
     )   public
         initializer
     {
@@ -61,7 +63,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         virtualReserveBuy = _vReserveBuy;
         virtualSupplySell = _vSupplySell;
         virtualReserveSell = _vReserveSell;
-
+        bancorFormula = BancorFormula(_bancorFormulaAddress);
         sellAdaptor = new BancorAdaptor(_rrSell, 10, _vSupplySell, _vReserveSell);
 
         PPM = 1000000;
@@ -81,7 +83,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     }
 
     function purchaseReturn(uint256 _toSpend) public view returns (uint256) {
-        return calculatePurchaseReturn(
+        return bancorFormula.calculatePurchaseReturn(
             vSupplyBuy(),
             vReserveBuy(),
             reserveRatioBuy,
@@ -181,7 +183,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
             userBalance >= _toSell
         );
 
-        uint256 reserveReturned = calculateSaleReturn(
+        uint256 reserveReturned = bancorFormula.calculateSaleReturn(
             vSupplySell(),
             vReserveSell(),
             reserveRatioSell,
