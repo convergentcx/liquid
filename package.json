@@ -4,11 +4,11 @@
   "description": "Liquid tokens for creators and artists.",
   "main": "index.js",
   "scripts": {
-    "ganache": "ganache-cli --port 9545 --deterministic",
-    "test": "NODE_ENV=test truffle test",
-    "test:target": "NODE_ENV=test truffle test test/ConvergentBeta.js",
+    "ganache": "ganache-cli --port 9545 --deterministic --gasLimit 10000000",
+    "test": "NODE_ENV=test truffle test --network local",
+    "test:target": "NODE_ENV=test truffle test test/BondedFungibleToken.js --network local",
     "truffle:compile": "truffle compile",
-    "truffle:migrate": "truffle migrate",
+    "truffle:migrate": "truffle migrate --network local",
     "local:console": "npx truffle console --network local",
     "local:session": "zos session --network local --from 0x1df62f291b2e969fb0849d99d9ce41e2f137006e --expires 3600"
   },
