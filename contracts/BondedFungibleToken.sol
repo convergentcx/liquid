@@ -37,6 +37,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
     BancorFormula public bancorFormula;
     BancorAdaptor public sellAdaptor;
 
+    uint256 public fakeReserve;
+
     function init(
         address _creator,
         string _name,
@@ -91,6 +93,15 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
         );
     }
 
+    function sellReturn(uint256 _toSpend) public view returns (uint256) {
+        return bancorFormula.calculateSaleReturn(
+            vSupplySell(),
+            vReserveSell(),
+            reserveRatioSell,
+            _toSpend
+        );
+    }
+
     // function payout() public view returns (uint256) {}
 
     // function currentBuy() public view returns (uint256) {}
@@ -104,7 +115,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
     }
 
     function vReserveBuy() internal view returns (uint256) {
-        return virtualReserveBuy.add(reserve);
+        return virtualReserveBuy.add(fakeReserve);
     }
 
     function vSupplySell() internal view returns (uint256) {
@@ -147,11 +158,12 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
             uint256 contribution = _toSpend.sub(toReserve);
             heldContributions = heldContributions.add(contribution);
             reserve = reserve.add(toReserve);
+            fakeReserve = fakeReserve.add(_toSpend);
 
             _mint(msg.sender, tokensBought);
 
             emit Bought(msg.sender, tokensBought, _toSpend);
-            // emit Contributed(msg.sender, contribution);
+            emit Contributed(msg.sender, contribution);
 
             return true;
         }
@@ -161,19 +173,20 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
      * @dev Syntax Sugar over the lower curve purchase amount 
      */
     function calcAmountToReserve(uint256 _addedTokens)
-        internal view returns (uint256)
+        public view returns (uint256)
     {
         int256 integralBefore = sellAdaptor.integral(vSupplySell());
         int256 integralAfter = sellAdaptor.integral(_addedTokens.add(vSupplySell()));
         int256 amount = integralAfter - integralBefore;
+        uint256 amt = uint256(amount) / 10**uint256(sellAdaptor.getPrecision());
         require(
             amount > 0,
             "Failed to calculate reserve amount"
         );
-        return uint256(amount);
+        return amt;
     }
 
-    function sell(uint256 _toSell) // expected & slippage need to get added back in
+    function sell(uint256 _toSell, uint256 _expected, uint256 _maxSlippage)
         public returns (bool)
     {
         require(_toSell > 0);
@@ -183,14 +196,24 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
             userBalance >= _toSell
         );
 
-        uint256 reserveReturned = bancorFormula.calculateSaleReturn(
-            vSupplySell(),
-            vReserveSell(),
-            reserveRatioSell,
+        uint256 reserveReturned = sellReturn(_toSell);
+
+        if (_expected > 0) {
+            require(
+                reserveReturned >= _expected.sub(_maxSlippage)
+            );
+        }
+
+        reserve = reserve.sub(reserveReturned);
+
+        uint256 fakeReserveReturned = bancorFormula.calculateSaleReturn(
+            vSupplyBuy(),
+            vReserveBuy(),
+            reserveRatioBuy,
             _toSell
         );
 
-        reserve = reserve.sub(reserveReturned);
+        fakeReserve = fakeReserve.sub(fakeReserveReturned);
 
         _burn(msg.sender, _toSell);
 
