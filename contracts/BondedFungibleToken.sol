@@ -65,6 +65,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
         virtualReserveBuy = _vReserveBuy;
         virtualSupplySell = _vSupplySell;
         virtualReserveSell = _vReserveSell;
+        
         bancorFormula = BancorFormula(_bancorFormulaAddress);
         sellAdaptor = new BancorAdaptor(_rrSell, 10, _vSupplySell, _vReserveSell);
 
@@ -178,7 +179,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
         int256 integralBefore = sellAdaptor.integral(vSupplySell());
         int256 integralAfter = sellAdaptor.integral(_addedTokens.add(vSupplySell()));
         int256 amount = integralAfter - integralBefore;
-        uint256 amt = uint256(amount) / 10**uint256(sellAdaptor.getPrecision());
+        uint256 amt = uint256(amount);
         require(
             amount > 0,
             "Failed to calculate reserve amount"
@@ -204,6 +205,10 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
             );
         }
 
+        if (reserveReturned > reserve) {
+            reserveReturned = reserve;
+        }
+        
         reserve = reserve.sub(reserveReturned);
 
         uint256 fakeReserveReturned = bancorFormula.calculateSaleReturn(

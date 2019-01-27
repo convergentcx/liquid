@@ -49,13 +49,17 @@ contract BancorAdaptor {
         return expWPrecision;
     }
 
-    function calculateSlope(uint256 _s, uint256 _r) internal view returns (int256) {
+    event log(int256 a, int256 b, int256 c);
+
+    function calculateSlope(uint256 _s, uint256 _r) public returns (int256) {
         int256 s = int256(_s) * fixidity.fixed_1;
         int256 r = int256(_r) * fixidity.fixed_1;
         int256 nexp = fixidity.add(exponent, fixidity.fixed_1);
         int256 top = fixidity.multiply(r, nexp);
-        int256 bottom = fixidity.power_any(s, nexp);
-        int256 result = fixidity.divide(top, bottom);
+        top = fixidity.multiply(top, int256(10**18)) * fixidity.fixed_1;
+        int256 bottom = fixidity.power_any(s, nexp) /fixidity.fixed_1;
+        int256 result = top / bottom;
+        emit log(top, bottom, result);
         require(
             result > 0,  
             "Calculating slope failed"
@@ -81,6 +85,6 @@ contract BancorAdaptor {
             result > 0,
             "Calculating integral failed"
         );
-        return result;
+        return result / int256(10**18) / fixidity.fixed_1;
     }
 }
