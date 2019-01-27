@@ -62,7 +62,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         virtualSupplySell = _vSupplySell;
         virtualReserveSell = _vReserveSell;
 
-        sellAdaptor = new BancorAdaptor(_rrSell, 10, _vSupply, _vReserve);
+        sellAdaptor = new BancorAdaptor(_rrSell, 10, _vSupplySell, _vReserveSell);
 
         PPM = 1000000;
 
@@ -82,8 +82,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
 
     function purchaseReturn(uint256 _toSpend) public view returns (uint256) {
         return calculatePurchaseReturn(
-            vSupply(),
-            vReserve(),
+            vSupplyBuy(),
+            vReserveBuy(),
             reserveRatioBuy,
             _toSpend
         );
@@ -161,8 +161,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     function calcAmountToReserve(uint256 _addedTokens)
         internal view returns (uint256)
     {
-        int256 integralBefore = sellAdaptor.integral(vSupply());
-        int256 integralAfter = sellAdaptor.integral(_addedTokens.add(vSupply()));
+        int256 integralBefore = sellAdaptor.integral(vSupplySell());
+        int256 integralAfter = sellAdaptor.integral(_addedTokens.add(vSupplySell()));
         int256 amount = integralAfter - integralBefore;
         require(
             amount > 0,

@@ -9,13 +9,13 @@ const SafeMath = artifacts.require('SafeMath');
 
 const deployFixidity = async deployer => {
   await deployer.deploy(FixidityLib);
-
   await deployer.link(FixidityLib, LogarithmLib);
-  await deployer.deploy(LogarithmLib);
 
+  await deployer.deploy(LogarithmLib);
   await deployer.link(FixidityLib, ExponentLib);
   await deployer.link(LogarithmLib, ExponentLib);
   await deployer.deploy(ExponentLib);
+
 }
 
 module.exports = async deployer => {
@@ -37,6 +37,8 @@ module.exports = async deployer => {
   await deployer.link(ExponentLib, BancorAdaptor);
 
   /// BondedFungibleToken
+  await deployer.link(ExponentLib, BondedFungibleToken);
+  await deployer.link(FixidityLib, BondedFungibleToken);
   await deployer.link(SafeMath, BondedFungibleToken);
   await deployer.deploy(BondedFungibleToken);
 }
