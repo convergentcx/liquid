@@ -47,6 +47,12 @@ contract BancorAdaptor is BancorFormula {
         return uint128(slopeWithPrecision);
     }
 
+    function getSlope ()
+    {
+        uint256 top = reserve.mul(rr.add(PPM)).div(PPM);
+        uint256 bottom = supply ** (rr.add(PPM))l
+    }
+
     function calculateExponent() public view returns (uint128) {
         int256 stepOne = fixidity.divide(int256(PPM), reserveRatio);
         int256 exponentWithPrecision = fixidity.subtract(stepOne, fixidity.fixed_1);

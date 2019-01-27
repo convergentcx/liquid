@@ -6,8 +6,8 @@ import "openzeppelin-eth/contracts/ownership/Ownable.sol";
 import "openzeppelin-eth/contracts/math/SafeMath.sol";
 import "zos-lib/contracts/Initializable.sol";
 
+import "./BancorAdaptor.sol";
 import "./bancor-contracts/converter/BancorFormula.sol";
-
 
 contract BFTEvents {
     event Bought(address indexed buyer, uint256 amount, uint256 paid);
@@ -17,9 +17,11 @@ contract BFTEvents {
 
 contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula, ERC20, ERC20Detailed {
     using SafeMath for uint256;
-    
-    // Ratios represented in parts per million (1-1000000)
-    uint32 public reserveRatioBuy; 
+
+    // Parts per million
+    uint24 public PPM;
+
+    uint32 public reserveRatioBuy;
     uint32 public reserveRatioSell;
 
     address public reserveAsset;
@@ -32,7 +34,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
 
     uint256 public heldContributions;
 
-    uint24 public PPM;
+    BancorAdaptor public sellAdaptor;
 
     function init(
         address _creator,
@@ -60,6 +62,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         virtualSupplySell = _vSupplySell;
         virtualReserveSell = _vReserveSell;
 
+        sellAdaptor = new BancorAdaptor(_rrSell, 10, _vSupply, _vReserve);
+
         PPM = 1000000;
 
     }
@@ -76,7 +80,14 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         return true;
     }
 
-    // function cost() public view returns (uint256) {}
+    function purchaseReturn(uint256 _toSpend) public view returns (uint256) {
+        return calculatePurchaseReturn(
+            vSupply(),
+            vReserve(),
+            reserveRatioBuy,
+            _toSpend
+        );
+    }
 
     // function payout() public view returns (uint256) {}
 
@@ -109,7 +120,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
         require(_toSpend > 0);
 
         if (reserveAsset == address(0x0)) {
-            require(_toSpend >= msg.value);
+            require(msg.value >= _toSpend);
             // TODO: handle the case of ether
 
         } else {
@@ -121,14 +132,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
             bool reserveTransferred = ERC20(reserveAsset).transferFrom(msg.sender, address(this), _toSpend);
             require(reserveTransferred);
 
-            // @dev: calculatePurchaseReturn causes an error when supply/reserve are 0! => setting them to 1 for now
-
-            uint256 tokensBought = calculatePurchaseReturn(
-                vSupplyBuy(),
-                vReserveBuy(),
-                reserveRatioBuy,
-                _toSpend
-            );
+            uint256 tokensBought = purchaseReturn(_toSpend);
 
             // If expected is set check that it hasn't slipped
             if (_expected > 0) {
@@ -137,7 +141,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
                 );
             }
 
-            uint256 toReserve = calcAmountToReserve(_toSpend, tokensBought);  
+            uint256 toReserve = calcAmountToReserve(tokensBought);  
             uint256 contribution = _toSpend.sub(toReserve);
             heldContributions = heldContributions.add(contribution);
             reserve = reserve.add(toReserve);
@@ -145,7 +149,7 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
             _mint(msg.sender, tokensBought);
 
             emit Bought(msg.sender, tokensBought, _toSpend);
-            emit Contributed(msg.sender, contribution);
+            // emit Contributed(msg.sender, contribution);
 
             return true;
         }
@@ -154,16 +158,17 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, BancorFormula
     /**
      * @dev Syntax Sugar over the lower curve purchase amount 
      */
-    function calcAmountToReserve(uint256 _toSpend, uint256 _newTokens) public view returns (uint256)
+    function calcAmountToReserve(uint256 _addedTokens)
+        internal view returns (uint256)
     {
-
-        return calculateSaleReturn(
-            vSupplySell() + _newTokens, 
-            vReserveSell(), // this is wrong, we need to know the vReserveSell at vSupplySell() + _newTokens -- which is kind of what we are trying to calculate here
-            reserveRatioSell, 
-            _newTokens
+        int256 integralBefore = sellAdaptor.integral(vSupply());
+        int256 integralAfter = sellAdaptor.integral(_addedTokens.add(vSupply()));
+        int256 amount = integralAfter - integralBefore;
+        require(
+            amount > 0,
+            "Failed to calculate reserve amount"
         );
-
+        return uint256(amount);
     }
 
     function sell(uint256 _toSell) // expected & slippage need to get added back in
