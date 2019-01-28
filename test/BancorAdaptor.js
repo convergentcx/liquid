@@ -2,7 +2,7 @@ const BancorAdaptor = artifacts.require('BancorAdaptor');
 
 const { expect } = require('chai');
 
-const { toWei } = web3.utils;
+const { fromWei, toWei } = web3.utils;
 
 contract('BancorAdaptor', (accounts) => {
   let ba;
@@ -11,8 +11,8 @@ contract('BancorAdaptor', (accounts) => {
     ba = await BancorAdaptor.new(
       500000,
       10,
-      45,
-      1
+      toWei('1'),
+      toWei('0.0005')
     );
 
     expect(ba.address).to.exist;
@@ -26,10 +26,20 @@ contract('BancorAdaptor', (accounts) => {
     ).to.equal('10000000000');
 
     const retSlope = await ba.slope();
-    // console.log(retSlope.toString());
+    console.log(retSlope.toString());
+
+    const slope = await ba.calculateSlope(toWei('1'), toWei('0.0005'))
+    const { a, b, c } = slope.logs[0].args;
+    console.log(
+`
+Top: ${a.toString()}
+Bottom: ${b.toString()}
+Result: ${c.toString()}
+`
+    )
     // expect(true).to.be.false;
 
-    const int = await ba.integral(toWei('210000000000', 'ether'));
-    console.log(int.toString());
+    const int = await ba.integral(toWei('1', 'ether'));
+    console.log(fromWei(int.toString()));
   });
 });

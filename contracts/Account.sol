@@ -31,7 +31,8 @@ contract Account is Initializable {
         uint256 _vSupplyBuy,
         uint256 _vReserveBuy,
         uint256 _vSupplySell,
-        uint256 _vReserveSell
+        uint256 _vReserveSell,
+        address _bancorFormulaAddress
     )   initializer
         public
     {
@@ -48,7 +49,8 @@ contract Account is Initializable {
             _vSupplyBuy,
             _vReserveBuy,
             _vSupplySell,
-            _vReserveSell
+            _vReserveSell,
+            _bancorFormulaAddress
         );
 
         emit MetadataUpdated(_metadata);

@@ -1,4 +1,5 @@
 import Decimal from 'decimal.js';
+const { fromWei, toWei } = require('web3').utils;
 
 const assert = (a: any, msg?: string) => {
   if (!!a === true) {
@@ -27,9 +28,16 @@ assert(
 // M is the slope, s is supply, r is reserve, rr = reserveRatio
 const getM = (s: Decimal, r: Decimal, rr: Decimal, precision: Decimal): Decimal => {
   const n = getN(rr, precision);
-  return r.mul(n.add(1))
+  return r.mul(n.add(1)).mul(toDecimal(10).pow(toDecimal(18)))
     .div(s.pow(n.add(1)));
 }
+
+console.log('slope: ', getM(
+  toDecimal(toWei('1')),
+  toDecimal(toWei('0.00005')),
+  toDecimal('500000'),
+  toDecimal('1000000')
+).toString());
 
 class Polynomial {
   private exponent: Decimal;
@@ -63,12 +71,12 @@ class Polynomial {
 
 type VirtualParams = { vSupply: Decimal, vReserve: Decimal };
 
-const getVirtualParams = (n: Decimal, m: Decimal): VirtualParams => {
-  // First try setting vReserve to 1 and calculating vSupply
-  let vReserve = toDecimal(1);
+const getVirtualParams = (n: Decimal, m: Decimal, c: Decimal): VirtualParams => {
+  // First try setting vReserve to c and calculating vSupply
+  let vReserve = c;
   let vSupply = (() => {
     const nexp: Decimal = n.add(toDecimal(1));
-    return (nexp.div(m)).pow((toDecimal(1).div(nexp))); 
+    return (nexp.div(m)).pow((c.div(nexp))); 
   })();
 
   // If vSupply is less than 1 whole unit it means that the slope
@@ -76,10 +84,10 @@ const getVirtualParams = (n: Decimal, m: Decimal): VirtualParams => {
   // in the reserve manner by setting vSupply to 1 and calculating
   // vReserve
   if (vSupply.lessThan(toDecimal(1))) {
-    vSupply = toDecimal(1);
+    vSupply = c;
     vReserve = (() => {
       const nexp: Decimal = n.add(toDecimal(1));
-      return (m.div(nexp)).mul((toDecimal(1).pow(nexp)));
+      return (m.div(nexp)).mul((c.pow(nexp)));
     })();
   }
 
@@ -90,27 +98,52 @@ const getVirtualParams = (n: Decimal, m: Decimal): VirtualParams => {
 }
 
 const poly = new Polynomial(
-  toDecimal('2'),
   toDecimal('1'),
+  toDecimal('0.001'),
 );
 
+const reduceTokenDecimals = (a: Decimal): Decimal => {
+  const decimals: Decimal = toDecimal(10).pow(toDecimal(18));
+  return a.div(decimals);
+}
+
+const integral = poly.integral(toDecimal(toWei('1')));
+console.log('integral:', reduceTokenDecimals(reduceTokenDecimals(integral)).toString())
+
+
+/**
+ * altVP returns the starting virtual reserve
+ * @param p Polynomial with the desired exponent and slope
+ * @param x Starting virtual supply
+ */
+const altVP = (p: Polynomial, x: Decimal): VirtualParams => {
+  const integral = poly.integral(x);
+  return {
+    vSupply: x,
+    vReserve: reduceTokenDecimals(integral),
+  };
+}
+
+const res2 = altVP(poly, toDecimal(toWei('1')))
+console.log('starting vReserve: ', res2.vReserve.toString(), 'starting vSupply: ', res2.vSupply.toString())
 
 const res = getVirtualParams(
   toDecimal(1),
   toDecimal("0.001"),
+  toDecimal(toWei('1'))
 );
 
 console.log('vSupply:', res.vSupply.toString(), 'vReserve:', res.vReserve.toString());
 // console.log(poly.integral(toDecimal(1)).toString());
 
-// console.log(
-//   getM(
-//     toDecimal(1),
-//     toDecimal(1),
-//     toDecimal(333333),
-//     toDecimal(1000000)
-//   ).toString()
-// );
+console.log(
+  getM(
+    toDecimal(1),
+    toDecimal(1),
+    toDecimal(333333),
+    toDecimal(1000000)
+  ).toString()
+);
 
 export default {
   getN,
