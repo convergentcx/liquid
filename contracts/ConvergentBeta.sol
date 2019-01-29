@@ -11,6 +11,7 @@ contract ConvergentBeta is Initializable, Ownable {
 
     address public baseAccount;
     address public bancorFormula;
+    address public admin;
 
     function initialize(
         address _baseAccount,
@@ -22,10 +23,15 @@ contract ConvergentBeta is Initializable, Ownable {
 
         baseAccount = _baseAccount;
         bancorFormula = _bf;
+
+        // We set the admin as the transaction origin
+        // because the `msg.sender` in this case
+        // is actually the App.sol contract.
+        admin = tx.origin;
     }
 
     function setBaseAccount(address _newBaseAccount)
-        public onlyOwner returns (bool) 
+        public onlyAdmin returns (bool) 
     {
         require(
             _newBaseAccount != address(0x0),
@@ -71,10 +77,15 @@ contract ConvergentBeta is Initializable, Ownable {
     function upgradeAccount(address _account) public returns (bool) {
         address creator = Account(_account).creator();
         require(
-            (msg.sender == creator) || (msg.sender == owner()),
+            (msg.sender == creator) || (msg.sender == admin),
             "Only the creator of the account or Convergent Admin can upgrade an account"
         );
 
         AdminUpgradeabilityProxy(_account).upgradeTo(baseAccount);
+    }
+
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "only admin");
+        _;
     }
 }
