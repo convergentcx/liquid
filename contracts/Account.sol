@@ -95,6 +95,12 @@ contract Account is Initializable {
     )   public
     {
         uint256 price = services[_serviceIndex];
+        
+        require(
+            bft.allowance(msg.sender, address(this)) >= price,
+            "Must give this contract allowance first"
+        );
+
         bft.transferFrom(msg.sender, creator, price);
 
         emit ServiceRequested(msg.sender, _serviceIndex, _message);

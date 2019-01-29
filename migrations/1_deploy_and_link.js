@@ -29,16 +29,16 @@ module.exports = async deployer => {
   await deployer.deploy(BancorFormula);
 
   // Fixidity
-  await deployFixidity(deployer);
+  // await deployFixidity(deployer);
 
   // Bancor Adaptor (link)
-  await deployer.link(FixidityLib, BancorAdaptor);
-  await deployer.link(LogarithmLib, BancorAdaptor);
-  await deployer.link(ExponentLib, BancorAdaptor);
+  // await deployer.link(FixidityLib, BancorAdaptor);
+  // await deployer.link(LogarithmLib, BancorAdaptor);
+  // await deployer.link(ExponentLib, BancorAdaptor);
 
   /// BondedFungibleToken
-  await deployer.link(ExponentLib, BondedFungibleToken);
-  await deployer.link(FixidityLib, BondedFungibleToken);
+  // await deployer.link(ExponentLib, BondedFungibleToken);
+  // await deployer.link(FixidityLib, BondedFungibleToken);
   await deployer.link(SafeMath, BondedFungibleToken);
   await deployer.deploy(BondedFungibleToken);
 }
