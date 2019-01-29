@@ -75,10 +75,10 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
         Ownable.initialize(_creator);
 
         reserveAsset = _rAsset;
-        reserveRatioBuy = _rr;
+        reserveRatio = _rr;
         reserveAsset = _rAsset;
-        virtualSupplyBuy = _vSupply;
-        virtualReserveBuy = _vReserve;
+        virtualSupply = _vSupply;
+        virtualReserve = _vReserve;
         creatorPercentage = _creatorPercentage;
         
         bancorFormula = BancorFormula(_bancorFormulaAddress);
@@ -86,7 +86,6 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
 
         cvgFee = 5;
         PPM = 1000000;
-
     }
 
     function sendContributions() public returns (bool) {

@@ -26,14 +26,12 @@ contract Account is Initializable {
         string _name,
         string _symbol,
         address _rAsset,
-        uint32 _rrBuy,
-        // uint32 _rrSell,
-        uint256 _vSupplyBuy,
-        uint256 _vReserveBuy,
-        // uint256 _vSupplySell,
-        // uint256 _vReserveSell,
+        uint32 _rr,
+        uint256 _vSupply,
+        uint256 _vReserve,
         uint256 _creatorPercent,
-        address _bancorFormulaAddress
+        address _bancorFormulaAddress,
+        address _gasPriceOracle
     )   initializer
         public
     {
@@ -45,14 +43,12 @@ contract Account is Initializable {
             _name,
             _symbol,
             _rAsset,
-            _rrBuy,
-            // _rrSell,
-            _vSupplyBuy,
-            _vReserveBuy,
-            // _vSupplySell,
-            // _vReserveSell,
+            _rr,
+            _vSupply,
+            _vReserve,
             _creatorPercent,
-            _bancorFormulaAddress
+            _bancorFormulaAddress,
+            _gasPriceOracle
         );
 
         emit MetadataUpdated(_metadata);

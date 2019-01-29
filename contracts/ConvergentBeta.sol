@@ -12,10 +12,12 @@ contract ConvergentBeta is Initializable, Ownable {
     address public baseAccount;
     address public bancorFormula;
     address public admin;
+    address public gasPriceOracle;
 
     function initialize(
         address _baseAccount,
-        address _bf
+        address _bf,
+        address _gasPriceOracle
     )   public
         initializer
     {
@@ -23,6 +25,7 @@ contract ConvergentBeta is Initializable, Ownable {
 
         baseAccount = _baseAccount;
         bancorFormula = _bf;
+        gasPriceOracle = _gasPriceOracle;
 
         // We set the admin as the transaction origin
         // because the `msg.sender` in this case
@@ -42,6 +45,17 @@ contract ConvergentBeta is Initializable, Ownable {
         return true;
     }
 
+    function setGasPriceOracle(address _gasPriceOracle)
+        public onlyAdmin returns (bool)
+    {
+        require(
+            _gasPriceOracle != address(0x0),
+            "Expected paramter `_gasPriceOracle`"
+        );
+        gasPriceOracle = _gasPriceOracle;
+        return true;
+    }
+
     /**
      * @dev Create a new account with ConvergentBeta proxy set as admin.
      * @param _metadata The content address of the metadata on IPFS.
@@ -57,7 +71,7 @@ contract ConvergentBeta is Initializable, Ownable {
         uint256 _cPercent
     ) public returns (address) {
         bytes memory data = abi.encodeWithSignature(
-            "initialize(address,bytes32,string,string,address,uint32,uint256,uint256,uint256,address)",
+            "initialize(address,bytes32,string,string,address,uint32,uint256,uint256,uint256,address,address)",
             msg.sender,
             _metadata,
             _name,
@@ -67,7 +81,8 @@ contract ConvergentBeta is Initializable, Ownable {
             _vSupply,
             _vReserve,
             _cPercent,
-            bancorFormula
+            bancorFormula,
+            gasPriceOracle
         );
         Account account = Account(new AdminUpgradeabilityProxy(baseAccount, data));
         emit NewAccount(address(account), msg.sender);

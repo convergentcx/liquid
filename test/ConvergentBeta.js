@@ -2,6 +2,7 @@ const Account = artifacts.require('Account');
 const BancorFormula = artifacts.require('BancorFormula');
 const BondedFungibleToken = artifacts.require('BondedFungibleToken');
 const ConvergentBeta = artifacts.require('ConvergentBeta');
+const GasPriceOracle = artifacts.require('GasPriceOracle');
 const MockERC20 = artifacts.require('MockERC20');
 
 const { expect } = require('chai');
@@ -57,9 +58,14 @@ const findEventFromReceipt = (receipt, eventName) => (
 
 
 contract('ConvergentBeta', (accounts) => {
-  let bancorFormula, baseAccount, cvgBeta, mERC20;
+  let bancorFormula, baseAccount, cvgBeta, gasPriceOracle, mERC20;
 
   before(async () => {
+    gasPriceOracle = await GasPriceOracle.new();
+    logGasDeploy(gasPriceOracle);
+    // For testing purposes set it really high for now
+    await gasPriceOracle.initialize(toWei('500', 'ether'));
+
     bancorFormula = await BancorFormula.new();
     logGasDeploy(bancorFormula, "Bancor Formula");
 
@@ -74,6 +80,7 @@ contract('ConvergentBeta', (accounts) => {
     const initTx = await cvgBeta.initialize(
       baseAccount.address,
       bancorFormula.address,
+      gasPriceOracle.address,
     );
     logGasTx(initTx, "ConvergentBeta::initialize()");
   });
@@ -185,9 +192,9 @@ contract('ConvergentBeta', (accounts) => {
       retPPM.toString()
     ).to.equal("1000000");
 
-    const retRRBuy = await bft.reserveRatioBuy();
+    const retRR = await bft.reserveRatio();
     expect(
-      retRRBuy.toString()
+      retRR.toString()
     ).to.equal("500000");
 
     const retOwner = await bft.owner();
@@ -215,12 +222,12 @@ contract('ConvergentBeta', (accounts) => {
       retReserve.toString()
     ).to.equal("0");
 
-    const retVS = await bft.virtualSupplyBuy();
+    const retVS = await bft.virtualSupply();
     expect(
       retVS.toString()
     ).to.equal("1000000000000000000")
 
-    const retVR = await bft.virtualReserveBuy();
+    const retVR = await bft.virtualReserve();
     expect(
       retVR.toString()
     ).to.equal("500000000000000");
