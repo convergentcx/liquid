@@ -20,6 +20,13 @@ const poly = new Polynomial(exponent, slope);
 
 const vReserve = toDecimal('500000000000000');
 
+/**
+ * Linear Curve
+ * RR - 500000
+ * vSupply - 1000000000000000000
+ * vReserve - 500000000000000
+ */
+
 contract("BondedFungibleToken", (accounts) => {
   let bft, mERC20;
 

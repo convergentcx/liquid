@@ -18,6 +18,8 @@ contract ConvergentBeta is Initializable, Ownable {
     )   public
         initializer
     {
+        Ownable.initialize(msg.sender);
+
         baseAccount = _baseAccount;
         bancorFormula = _bf;
     }
