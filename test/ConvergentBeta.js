@@ -95,7 +95,7 @@ contract('ConvergentBeta', (accounts) => {
     // so we set the baseAccount to a random address, then change
     // it back.
     const rAddr = randomAddress();
-    console.log(rAddr)
+    // console.log(rAddr)
     const setBaseAccountTx = await cvgBeta.setBaseAccount(
       rAddr,
       { from: accounts[0] },
@@ -215,6 +215,29 @@ contract('ConvergentBeta', (accounts) => {
       retReserve.toString()
     ).to.equal("0");
 
-    const
+    const retVS = await bft.virtualSupplyBuy();
+    expect(
+      retVS.toString()
+    ).to.equal("1000000000000000000")
+
+    const retVR = await bft.virtualReserveBuy();
+    expect(
+      retVR.toString()
+    ).to.equal("500000000000000");
+
+    const retHC = await bft.heldContributions();
+    expect(
+      retHC.toString()
+    ).to.equal("0");
+
+    const retBF = await bft.bancorFormula();
+    expect(
+      retBF.toLowerCase()
+    ).to.equal(bancorFormula.address.toLowerCase());
+
+    const retCP = await bft.creatorPercentage();
+    expect(
+      retCP.toString()
+    ).to.equal("10");
   });
 });
