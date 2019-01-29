@@ -116,11 +116,11 @@
       }
     },
     "ConvergentBeta": {
-      "address": "0x410f6d3cfea2a18ba5080590b4c879c8addc8a05",
-      "constructorCode": "608060405234801561001057600080fd5b5061203b806100206000396000f300",
-      "bodyBytecodeHash": "e2d5cb29d0b2858ad8e0326b52a0739b79c9431234ded980103bc0acfde1d6f8",
-      "localBytecodeHash": "3cdaa68177a18c2d681e018cc6c0f0d0089cf81e2ef9d8208ec2367b6239cd01",
-      "deployedBytecodeHash": "3cdaa68177a18c2d681e018cc6c0f0d0089cf81e2ef9d8208ec2367b6239cd01",
+      "address": "0x1cf1c7f97fa8c64deb1fe52239d5f770b1d90b41",
+      "constructorCode": "608060405234801561001057600080fd5b50612054806100206000396000f300",
+      "bodyBytecodeHash": "fd2ac8b8d4f700bfd30aee31bfd023dc50602cbbf1534b6d1f647e08e057d18a",
+      "localBytecodeHash": "eb1f313c2d96b7789b8b30a736d227bae707203fa5df11fc6c58d6df6bfb761b",
+      "deployedBytecodeHash": "eb1f313c2d96b7789b8b30a736d227bae707203fa5df11fc6c58d6df6bfb761b",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -150,7 +150,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 13096,
+          "astId": 13095,
           "type": "t_bool",
           "src": "757:24:58"
         },
@@ -158,7 +158,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 13098,
+          "astId": 13097,
           "type": "t_bool",
           "src": "876:25:58"
         },
@@ -166,7 +166,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 13147,
+          "astId": 13146,
           "type": "t_array:50<t_uint256>",
           "src": "1891:29:58"
         },
@@ -174,7 +174,7 @@
           "contract": "Ownable",
           "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
           "label": "_owner",
-          "astId": 12380,
+          "astId": 12379,
           "type": "t_address",
           "src": "301:22:53"
         },
@@ -182,7 +182,7 @@
           "contract": "Ownable",
           "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
           "label": "______gap",
-          "astId": 12485,
+          "astId": 12484,
           "type": "t_array:50<t_uint256>",
           "src": "2057:29:53"
         },
@@ -464,11 +464,11 @@
       }
     },
     "GasPriceOracle": {
-      "address": "0x06fe18caa64ce3c25e0b94085afb0383ace7cc18",
+      "address": "0xe6046d602545a2b65d1990c237cb169267559f74",
       "constructorCode": "608060405234801561001057600080fd5b50610830806100206000396000f300",
-      "bodyBytecodeHash": "48295a743b688c10f1729eb93932fb1a7d7be6f97a022089c7e717cc44907403",
-      "localBytecodeHash": "913f9ffcc103f9fe2249f22aa10d386cf4296e61a1b793e080bd51d75c0c3d1d",
-      "deployedBytecodeHash": "913f9ffcc103f9fe2249f22aa10d386cf4296e61a1b793e080bd51d75c0c3d1d",
+      "bodyBytecodeHash": "92d64bfc0626e272b8f5a96ddf0e626594c48d2af39cdb5be9f431243ad77e3b",
+      "localBytecodeHash": "f63cf2c34ba1d4c634bb6b87a32093491da6f6d32012acf546ec25eecc76ed09",
+      "deployedBytecodeHash": "f63cf2c34ba1d4c634bb6b87a32093491da6f6d32012acf546ec25eecc76ed09",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -498,7 +498,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 13077,
+          "astId": 13095,
           "type": "t_bool",
           "src": "757:24:58"
         },
@@ -506,7 +506,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 13079,
+          "astId": 13097,
           "type": "t_bool",
           "src": "876:25:58"
         },
@@ -514,7 +514,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 13128,
+          "astId": 13146,
           "type": "t_array:50<t_uint256>",
           "src": "1891:29:58"
         },
@@ -522,7 +522,7 @@
           "contract": "Ownable",
           "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
           "label": "_owner",
-          "astId": 12361,
+          "astId": 12379,
           "type": "t_address",
           "src": "301:22:53"
         },
@@ -530,7 +530,7 @@
           "contract": "Ownable",
           "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
           "label": "______gap",
-          "astId": 12466,
+          "astId": 12484,
           "type": "t_array:50<t_uint256>",
           "src": "2057:29:53"
         },
@@ -538,7 +538,7 @@
           "contract": "GasPriceOracle",
           "path": "contracts/GasPriceOracle.sol",
           "label": "maxGasPrice",
-          "astId": 1729,
+          "astId": 1747,
           "type": "t_uint256",
           "src": "291:26:5"
         }
@@ -548,7 +548,9 @@
         "hasSelfDestruct": false,
         "hasDelegateCall": false,
         "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": []
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
       }
     },
     "BancorFormula": {
@@ -617,6 +619,13 @@
         "address": "0x0010bfa3df1fdd15ebeb03df2addcf355f273d08",
         "version": "0.1.0",
         "implementation": "0x410f6d3cfea2a18ba5080590b4c879c8addc8a05"
+      }
+    ],
+    "convergent/GasPriceOracle": [
+      {
+        "address": "0x98047539a6e898923bb9ef90cc974859fced03ff",
+        "version": "0.1.0",
+        "implementation": "0xe6046d602545a2b65d1990c237cb169267559f74"
       }
     ]
   },

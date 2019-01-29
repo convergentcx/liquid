@@ -13,7 +13,7 @@ contract GasPriceOracle is Initializable, Ownable {
     )   public
         initializer
     {
-        Ownable.initialize(msg.sender);
+        Ownable.initialize(tx.origin);
         maxGasPrice = _maxGasPrice;
     }
 
