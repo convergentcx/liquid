@@ -27,11 +27,12 @@ contract Account is Initializable {
         string _symbol,
         address _rAsset,
         uint32 _rrBuy,
-        uint32 _rrSell,
+        // uint32 _rrSell,
         uint256 _vSupplyBuy,
         uint256 _vReserveBuy,
-        uint256 _vSupplySell,
-        uint256 _vReserveSell,
+        // uint256 _vSupplySell,
+        // uint256 _vReserveSell,
+        uint256 _creatorPercent,
         address _bancorFormulaAddress
     )   initializer
         public
@@ -45,11 +46,12 @@ contract Account is Initializable {
             _symbol,
             _rAsset,
             _rrBuy,
-            _rrSell,
+            // _rrSell,
             _vSupplyBuy,
             _vReserveBuy,
-            _vSupplySell,
-            _vReserveSell,
+            // _vSupplySell,
+            // _vReserveSell,
+            _creatorPercent,
             _bancorFormulaAddress
         );
 
