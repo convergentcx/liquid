@@ -1,20 +1,20 @@
 pragma solidity ^0.4.24;
 
 import "zos-lib/contracts/Initializable.sol";
+import "zos-lib/contracts/upgradeability/AdminUpgradeabilityProxy.sol";
+
 import "./BondedFungibleToken.sol";
 
 /**
  * @title Account
  * @dev   Manages the logic for user accounts on Convergent.
  */
-contract Account is Initializable {
+contract Account is Initializable, BondedFungibleToken {
     event MetadataUpdated(bytes32 newMetadata);
     event ServiceRequested(address indexed requestor, uint8 indexed serviceIndex, string message);
 
     address public creator;
     bytes32 public metadata;
-
-    BondedFungibleToken public bft;
 
     uint256 public curServiceIndex;
     // serviceIndex => servicePrice
@@ -37,8 +37,8 @@ contract Account is Initializable {
     {
         creator = _creator;
         metadata = _metadata;
-        bft = BondedFungibleToken(new BondedFungibleToken());
-        bft.init(
+    
+        BondedFungibleToken.init(
             _creator,
             _name,
             _symbol,
@@ -65,8 +65,8 @@ contract Account is Initializable {
 
     function removeService(
         uint8 _serviceIndex
-    )   onlyCreator
-        public
+    )   public
+        onlyCreator
     {
         require(
             services[_serviceIndex] != 0,
@@ -93,11 +93,11 @@ contract Account is Initializable {
         uint256 price = services[_serviceIndex];
         
         require(
-            bft.allowance(msg.sender, address(this)) >= price,
+            allowance(msg.sender, address(this)) >= price,
             "Must give this contract allowance first"
         );
 
-        bft.transferFrom(msg.sender, creator, price);
+        transferFrom(msg.sender, creator, price);
 
         emit ServiceRequested(msg.sender, _serviceIndex, _message);
     }

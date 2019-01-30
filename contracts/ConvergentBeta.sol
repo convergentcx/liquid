@@ -10,31 +10,30 @@ contract ConvergentBeta is Initializable, Ownable {
     event NewAccount(address account, address indexed creator);
 
     address public baseAccount;
+    // address public baseBFT;
     address public bancorFormula;
-    address public admin;
     address public gasPriceOracle;
+
+    mapping (address => address) public accountToCreator;
 
     function initialize(
         address _baseAccount,
+        // address _baseBFT,
         address _bf,
         address _gasPriceOracle
     )   public
         initializer
     {
-        Ownable.initialize(msg.sender);
+        Ownable.initialize(tx.origin);
 
         baseAccount = _baseAccount;
+        // baseBFT = _baseBFT;
         bancorFormula = _bf;
         gasPriceOracle = _gasPriceOracle;
-
-        // We set the admin as the transaction origin
-        // because the `msg.sender` in this case
-        // is actually the App.sol contract.
-        admin = tx.origin;
     }
 
     function setBaseAccount(address _newBaseAccount)
-        public onlyAdmin returns (bool) 
+        public onlyOwner returns (bool) 
     {
         require(
             _newBaseAccount != address(0x0),
@@ -44,9 +43,21 @@ contract ConvergentBeta is Initializable, Ownable {
         baseAccount = _newBaseAccount;
         return true;
     }
+    
+    // function setBaseBFT(address _newBaseBFT)
+    //     public onlyOwner returns (bool)
+    // {
+    //     require(
+    //         _newBaseBFT != address(0x0),
+    //         "Expected parameter `_newBaseBFT`"
+    //     );
+
+    //     baseBFT = _newBaseBFT;
+    //     return true;
+    // }
 
     function setGasPriceOracle(address _gasPriceOracle)
-        public onlyAdmin returns (bool)
+        public onlyOwner returns (bool)
     {
         require(
             _gasPriceOracle != address(0x0),
@@ -86,21 +97,34 @@ contract ConvergentBeta is Initializable, Ownable {
         );
         Account account = Account(new AdminUpgradeabilityProxy(baseAccount, data));
         emit NewAccount(address(account), msg.sender);
+        accountToCreator[address(account)] = msg.sender;
         return address(account);
     }
 
-    function upgradeAccount(address _account) public returns (bool) {
-        address creator = Account(_account).creator();
+    modifier onlyCreator(address _account) {
         require(
-            (msg.sender == creator) || (msg.sender == admin),
-            "Only the creator of the account or Convergent Admin can upgrade an account"
+            msg.sender == accountToCreator[_account]
         );
+        _;
+    }
+
+    function upgradeAccount(address _account) public onlyCreator(_account) returns (bool) {
+        // This doesn't work becuase _account is a proxy
+        // and this contract is the proxy admin, so it thinks
+        // it's calling the fallback function.
+    
+        // address creator = Account(_account).creator();
+        // require(
+        //     (msg.sender == creator) || (msg.sender == owner()),
+        //     "Only the creator of the account or Convergent Admin can upgrade an account"
+        // );
 
         AdminUpgradeabilityProxy(_account).upgradeTo(baseAccount);
     }
 
-    modifier onlyAdmin() {
-        require(msg.sender == admin, "only admin");
-        _;
+    function getImplementationForAccount(address _account)
+        public view returns (address)
+    {
+        return AdminUpgradeabilityProxy(_account).implementation();
     }
 }
