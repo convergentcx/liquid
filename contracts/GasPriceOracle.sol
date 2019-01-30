@@ -13,7 +13,7 @@ contract GasPriceOracle is Initializable, Ownable {
     )   public
         initializer
     {
-        Ownable.initialize(msg.sender);
+        Ownable.initialize(tx.origin);
         maxGasPrice = _maxGasPrice;
     }
 
@@ -23,19 +23,8 @@ contract GasPriceOracle is Initializable, Ownable {
         maxGasPrice = _maxGasPrice;
         return true;
     }
-}
 
-contract GasPriceValidator {
-    address public gasPriceOracle;
-
-    constructor(address _gpo) public {
-        gasPriceOracle = _gpo;
-    }
-
-    modifier validateGasPrice {
-        uint256 mgp = GasPriceOracle(gasPriceOracle).maxGasPrice();
-        require(mgp > 0);
-        require(tx.gasprice <= mgp);
-        _;
+    function validateGasPrice(uint256 _gp) public view returns (bool) {
+        return _gp <= maxGasPrice;
     }
 }
