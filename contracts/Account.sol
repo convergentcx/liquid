@@ -1,20 +1,20 @@
 pragma solidity ^0.4.24;
 
 import "zos-lib/contracts/Initializable.sol";
+import "zos-lib/contracts/upgradeability/AdminUpgradeabilityProxy.sol";
+
 import "./BondedFungibleToken.sol";
 
 /**
  * @title Account
  * @dev   Manages the logic for user accounts on Convergent.
  */
-contract Account is Initializable {
+contract Account is Initializable, BondedFungibleToken {
     event MetadataUpdated(bytes32 newMetadata);
     event ServiceRequested(address indexed requestor, uint8 indexed serviceIndex, string message);
 
     address public creator;
     bytes32 public metadata;
-
-    BondedFungibleToken public bft;
 
     uint256 public curServiceIndex;
     // serviceIndex => servicePrice
@@ -26,31 +26,29 @@ contract Account is Initializable {
         string _name,
         string _symbol,
         address _rAsset,
-        uint32 _rrBuy,
-        uint32 _rrSell,
-        uint256 _vSupplyBuy,
-        uint256 _vReserveBuy,
-        uint256 _vSupplySell,
-        uint256 _vReserveSell,
-        address _bancorFormulaAddress
+        uint32 _rr,
+        uint256 _vSupply,
+        uint256 _vReserve,
+        uint256 _creatorPercent,
+        address _bancorFormulaAddress,
+        address _gasPriceOracle
     )   initializer
         public
     {
         creator = _creator;
         metadata = _metadata;
-        bft = BondedFungibleToken(new BondedFungibleToken());
-        bft.init(
+    
+        BondedFungibleToken.init(
             _creator,
             _name,
             _symbol,
             _rAsset,
-            _rrBuy,
-            _rrSell,
-            _vSupplyBuy,
-            _vReserveBuy,
-            _vSupplySell,
-            _vReserveSell,
-            _bancorFormulaAddress
+            _rr,
+            _vSupply,
+            _vReserve,
+            _creatorPercent,
+            _bancorFormulaAddress,
+            _gasPriceOracle
         );
 
         emit MetadataUpdated(_metadata);
@@ -67,8 +65,8 @@ contract Account is Initializable {
 
     function removeService(
         uint8 _serviceIndex
-    )   onlyCreator
-        public
+    )   public
+        onlyCreator
     {
         require(
             services[_serviceIndex] != 0,
@@ -93,7 +91,13 @@ contract Account is Initializable {
     )   public
     {
         uint256 price = services[_serviceIndex];
-        bft.transferFrom(msg.sender, creator, price);
+        
+        require(
+            allowance(msg.sender, address(this)) >= price,
+            "Must give this contract allowance first"
+        );
+
+        transferFrom(msg.sender, creator, price);
 
         emit ServiceRequested(msg.sender, _serviceIndex, _message);
     }

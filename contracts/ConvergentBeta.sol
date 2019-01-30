@@ -7,31 +7,29 @@ import "zos-lib/contracts/upgradeability/AdminUpgradeabilityProxy.sol";
 import "./Account.sol";
 
 contract ConvergentBeta is Initializable, Ownable {    
-    event NEW_ACCOUNT(address account, address indexed creator);
-    event NEW_VERSION(uint16[3] indexed semVer, bytes32 metadata, address packages);
+    event NewAccount(address account, address indexed creator);
 
-    // These bases will themselves be proxies to allow
-    // for easy upgrading.
     address public baseAccount;
-    address public baseCurves;
+    // address public baseBFT;
+    address public bancorFormula;
+    address public gasPriceOracle;
 
-    struct Version {
-        uint16[3] semVer;
-        bytes32 metadata;
-        address packages;
-    }
-
-    uint16[3] public version;
+    mapping (address => address) public accountToCreator;
 
     function initialize(
         address _baseAccount,
-        address _baseCurves
+        // address _baseBFT,
+        address _bf,
+        address _gasPriceOracle
     )   public
         initializer
     {
+        Ownable.initialize(tx.origin);
+
         baseAccount = _baseAccount;
-        baseCurves  = _baseCurves;
-        version = [0,0,1];
+        // baseBFT = _baseBFT;
+        bancorFormula = _bf;
+        gasPriceOracle = _gasPriceOracle;
     }
 
     function setBaseAccount(address _newBaseAccount)
@@ -45,25 +43,88 @@ contract ConvergentBeta is Initializable, Ownable {
         baseAccount = _newBaseAccount;
         return true;
     }
+    
+    // function setBaseBFT(address _newBaseBFT)
+    //     public onlyOwner returns (bool)
+    // {
+    //     require(
+    //         _newBaseBFT != address(0x0),
+    //         "Expected parameter `_newBaseBFT`"
+    //     );
+
+    //     baseBFT = _newBaseBFT;
+    //     return true;
+    // }
+
+    function setGasPriceOracle(address _gasPriceOracle)
+        public onlyOwner returns (bool)
+    {
+        require(
+            _gasPriceOracle != address(0x0),
+            "Expected paramter `_gasPriceOracle`"
+        );
+        gasPriceOracle = _gasPriceOracle;
+        return true;
+    }
 
     /**
      * @dev Create a new account with ConvergentBeta proxy set as admin.
      * @param _metadata The content address of the metadata on IPFS.
      */
-    function newAccount(bytes32 _metadata) public returns (address) {
-        bytes memory data = abi.encodeWithSignature("initialize(address,bytes32,address)", msg.sender, _metadata, baseCurves);
+    function newAccount(
+        bytes32 _metadata, 
+        string _name, 
+        string _symbol, 
+        address _rAsset,
+        uint32 _rr,
+        uint256 _vSupply,
+        uint256 _vReserve,
+        uint256 _cPercent
+    ) public returns (address) {
+        bytes memory data = abi.encodeWithSignature(
+            "initialize(address,bytes32,string,string,address,uint32,uint256,uint256,uint256,address,address)",
+            msg.sender,
+            _metadata,
+            _name,
+            _symbol,
+            _rAsset,
+            _rr,
+            _vSupply,
+            _vReserve,
+            _cPercent,
+            bancorFormula,
+            gasPriceOracle
+        );
         Account account = Account(new AdminUpgradeabilityProxy(baseAccount, data));
-        emit NEW_ACCOUNT(address(account), msg.sender);
+        emit NewAccount(address(account), msg.sender);
+        accountToCreator[address(account)] = msg.sender;
         return address(account);
     }
 
-    function upgradeAccount(address _account) public returns (bool) {
-        address creator = Account(_account).creator();
+    modifier onlyCreator(address _account) {
         require(
-            (msg.sender == creator) || (msg.sender == owner()),
-            "Only the creator of the account or Convergent Admin can upgrade an account"
+            msg.sender == accountToCreator[_account]
         );
+        _;
+    }
+
+    function upgradeAccount(address _account) public onlyCreator(_account) returns (bool) {
+        // This doesn't work becuase _account is a proxy
+        // and this contract is the proxy admin, so it thinks
+        // it's calling the fallback function.
+    
+        // address creator = Account(_account).creator();
+        // require(
+        //     (msg.sender == creator) || (msg.sender == owner()),
+        //     "Only the creator of the account or Convergent Admin can upgrade an account"
+        // );
 
         AdminUpgradeabilityProxy(_account).upgradeTo(baseAccount);
+    }
+
+    function getImplementationForAccount(address _account)
+        public view returns (address)
+    {
+        return AdminUpgradeabilityProxy(_account).implementation();
     }
 }
