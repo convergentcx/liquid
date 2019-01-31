@@ -3,11 +3,10 @@
   "name": "convergent",
   "version": "0.1.0",
   "contracts": {
-    "Account": "Account",
     "ConvergentBeta": "ConvergentBeta",
-    "BondedFungibleToken": "BondedFungibleToken",
-    "GasPriceOracle": "GasPriceOracle",
-    "BancorFormula": "BancorFormula"
+    "Account": "Account",
+    "BancorFormula": "BancorFormula",
+    "GasPriceOracle": "GasPriceOracle"
   },
   "dependencies": {
     "openzeppelin-eth": "^2.0.2"
