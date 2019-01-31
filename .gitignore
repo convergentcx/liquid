@@ -2,3 +2,4 @@ node_modules
 build
 .zos.session
 scratch.txt
+yarn-error.log
