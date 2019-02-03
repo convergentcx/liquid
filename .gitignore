@@ -3,3 +3,4 @@ build
 .zos.session
 scratch.txt
 yarn-error.log
+env.sh

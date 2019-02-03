@@ -135,15 +135,15 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
     }
 
     function buy(uint256 _toSpend, uint256 _expected, uint256 _maxSlippage)
-        public validGasPrice returns (bool)
+        public payable validGasPrice returns (bool)
     {
         require(_toSpend > 0);
 
         if (reserveAsset == address(0x0)) {
             require(msg.value >= _toSpend);
-            // TODO: handle the case of ether
-
         } else {
+            require(msg.value == 0, "Tokens used as reserve not ether");
+
             uint256 userBalance = ERC20(reserveAsset).balanceOf(msg.sender);
             require(userBalance >= _toSpend);
             uint256 userApproved = ERC20(reserveAsset).allowance(msg.sender, address(this));
@@ -151,28 +151,28 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
 
             bool reserveTransferred = ERC20(reserveAsset).transferFrom(msg.sender, address(this), _toSpend);
             require(reserveTransferred);
-
-            uint256 contribution = _toSpend * creatorPercentage / 100;
-            uint256 spendingAmt = _toSpend.sub(contribution);
-            uint256 tokensBought = purchaseReturn(spendingAmt);
-
-            // If expected is set check that it hasn't slipped
-            if (_expected > 0) {
-                require(
-                    tokensBought >= (_expected.sub(_maxSlippage))
-                );
-            }
-
-            heldContributions = heldContributions.add(contribution);
-            reserve = reserve.add(spendingAmt);
-
-            _mint(msg.sender, tokensBought);
-
-            emit Bought(msg.sender, tokensBought, _toSpend);
-            emit Contributed(msg.sender, contribution);
-
-            return true;
         }
+
+        uint256 contribution = _toSpend * creatorPercentage / 100;
+        uint256 spendingAmt = _toSpend.sub(contribution);
+        uint256 tokensBought = purchaseReturn(spendingAmt);
+
+        // If expected is set check that it hasn't slipped
+        if (_expected > 0) {
+            require(
+                tokensBought >= (_expected.sub(_maxSlippage))
+            );
+        }
+
+        heldContributions = heldContributions.add(contribution);
+        reserve = reserve.add(spendingAmt);
+
+        _mint(msg.sender, tokensBought);
+
+        emit Bought(msg.sender, tokensBought, _toSpend);
+        emit Contributed(msg.sender, contribution);
+
+        return true;
     }
 
     function sell(uint256 _toSell, uint256 _expected, uint256 _maxSlippage)
@@ -204,7 +204,8 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
         _burn(msg.sender, _toSell);
 
         if (reserveAsset == address(0x0)) {
-            // TODO handle case of ether
+            msg.sender.transfer(reserveReturned.sub(cvgPercentage));
+            msg.sender.transfer(cvgPercentage);
         } else {
             bool transferred = ERC20(reserveAsset).transfer(msg.sender, reserveReturned.sub(cvgPercentage));
             bool transferredFee = ERC20(reserveAsset).transfer(msg.sender, cvgPercentage); 
@@ -214,4 +215,6 @@ contract BondedFungibleToken is Initializable, BFTEvents, Ownable, ERC20, ERC20D
         emit Sold(msg.sender, _toSell, reserveReturned);
         return true;
     }
+
+    function () payable { revert("Fallback disabled!"); }
 }

@@ -1,0 +1,590 @@
+{
+  "contracts": {
+    "GasPriceOracle": {
+      "address": "0x454d143cc77236b435c3f42ab02734d1bb78c27f",
+      "constructorCode": "608060405234801561001057600080fd5b50610830806100206000396000f300",
+      "bodyBytecodeHash": "92d64bfc0626e272b8f5a96ddf0e626594c48d2af39cdb5be9f431243ad77e3b",
+      "localBytecodeHash": "f63cf2c34ba1d4c634bb6b87a32093491da6f6d32012acf546ec25eecc76ed09",
+      "deployedBytecodeHash": "f63cf2c34ba1d4c634bb6b87a32093491da6f6d32012acf546ec25eecc76ed09",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 13178,
+          "type": "t_bool",
+          "src": "757:24:58"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 13180,
+          "type": "t_bool",
+          "src": "876:25:58"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 13229,
+          "type": "t_array:50<t_uint256>",
+          "src": "1891:29:58"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
+          "label": "_owner",
+          "astId": 12462,
+          "type": "t_address",
+          "src": "301:22:53"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
+          "label": "______gap",
+          "astId": 12567,
+          "type": "t_array:50<t_uint256>",
+          "src": "2057:29:53"
+        },
+        {
+          "contract": "GasPriceOracle",
+          "path": "contracts/GasPriceOracle.sol",
+          "label": "maxGasPrice",
+          "astId": 1830,
+          "type": "t_uint256",
+          "src": "291:26:5"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "ConvergentBeta": {
+      "address": "0x12c7f1d435c0367057d3899acbc6db657e7b0ae8",
+      "constructorCode": "608060405234801561001057600080fd5b506122e0806100206000396000f300",
+      "bodyBytecodeHash": "5987c6f596acd159a08a82902fe9dc19494deb5cd2c0c01c6592d35f5ebb4b64",
+      "localBytecodeHash": "e6117031548dceb9711b7729789574940876e64d4a6ae30294546738536f8aa6",
+      "deployedBytecodeHash": "e6117031548dceb9711b7729789574940876e64d4a6ae30294546738536f8aa6",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_mapping<t_address>": {
+          "id": "t_mapping<t_address>",
+          "valueType": "t_address",
+          "label": "mapping(key => address)",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 13178,
+          "type": "t_bool",
+          "src": "757:24:58"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 13180,
+          "type": "t_bool",
+          "src": "876:25:58"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 13229,
+          "type": "t_array:50<t_uint256>",
+          "src": "1891:29:58"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
+          "label": "_owner",
+          "astId": 12462,
+          "type": "t_address",
+          "src": "301:22:53"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
+          "label": "______gap",
+          "astId": 12567,
+          "type": "t_array:50<t_uint256>",
+          "src": "2057:29:53"
+        },
+        {
+          "contract": "ConvergentBeta",
+          "path": "contracts/ConvergentBeta.sol",
+          "label": "baseAccount",
+          "astId": 1611,
+          "type": "t_address",
+          "src": "354:26:4"
+        },
+        {
+          "contract": "ConvergentBeta",
+          "path": "contracts/ConvergentBeta.sol",
+          "label": "bancorFormula",
+          "astId": 1613,
+          "type": "t_address",
+          "src": "417:28:4"
+        },
+        {
+          "contract": "ConvergentBeta",
+          "path": "contracts/ConvergentBeta.sol",
+          "label": "gasPriceOracle",
+          "astId": 1615,
+          "type": "t_address",
+          "src": "451:29:4"
+        },
+        {
+          "contract": "ConvergentBeta",
+          "path": "contracts/ConvergentBeta.sol",
+          "label": "accountToCreator",
+          "astId": 1619,
+          "type": "t_mapping<t_address>",
+          "src": "487:52:4"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "Account": {
+      "address": "0xa86385ee51e09407118223ac929535b26526191e",
+      "constructorCode": "608060405234801561001057600080fd5b506143d9806100206000396000f300",
+      "bodyBytecodeHash": "3fbacc802a9061670c711624914109e330c6fe2b9679e63d2c9ee153fbf286df",
+      "localBytecodeHash": "c2c5b41431db155be0f82c608e60f74e4250c67acf7049a8407442e66dd8e28a",
+      "deployedBytecodeHash": "c2c5b41431db155be0f82c608e60f74e4250c67acf7049a8407442e66dd8e28a",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_uint8": {
+          "id": "t_uint8",
+          "kind": "elementary",
+          "label": "uint8"
+        },
+        "t_uint24": {
+          "id": "t_uint24",
+          "kind": "elementary",
+          "label": "uint24"
+        },
+        "t_uint32": {
+          "id": "t_uint32",
+          "kind": "elementary",
+          "label": "uint32"
+        },
+        "t_bytes32": {
+          "id": "t_bytes32",
+          "kind": "elementary",
+          "label": "bytes32"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 13178,
+          "type": "t_bool",
+          "src": "757:24:58"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 13180,
+          "type": "t_bool",
+          "src": "876:25:58"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 13229,
+          "type": "t_array:50<t_uint256>",
+          "src": "1891:29:58"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
+          "label": "_owner",
+          "astId": 12462,
+          "type": "t_address",
+          "src": "301:22:53"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
+          "label": "______gap",
+          "astId": 12567,
+          "type": "t_array:50<t_uint256>",
+          "src": "2057:29:53"
+        },
+        {
+          "contract": "ERC20",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
+          "label": "_balances",
+          "astId": 12584,
+          "type": "t_mapping<t_uint256>",
+          "src": "491:46:54"
+        },
+        {
+          "contract": "ERC20",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
+          "label": "_allowed",
+          "astId": 12590,
+          "type": "t_mapping<t_uint256>",
+          "src": "542:66:54"
+        },
+        {
+          "contract": "ERC20",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
+          "label": "_totalSupply",
+          "astId": 12592,
+          "type": "t_uint256",
+          "src": "613:28:54"
+        },
+        {
+          "contract": "ERC20",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
+          "label": "______gap",
+          "astId": 13018,
+          "type": "t_array:50<t_uint256>",
+          "src": "7048:29:54"
+        },
+        {
+          "contract": "ERC20Detailed",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
+          "label": "_name",
+          "astId": 13029,
+          "type": "t_string",
+          "src": "382:20:55"
+        },
+        {
+          "contract": "ERC20Detailed",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
+          "label": "_symbol",
+          "astId": 13031,
+          "type": "t_string",
+          "src": "406:22:55"
+        },
+        {
+          "contract": "ERC20Detailed",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
+          "label": "_decimals",
+          "astId": 13033,
+          "type": "t_uint8",
+          "src": "432:23:55"
+        },
+        {
+          "contract": "ERC20Detailed",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
+          "label": "______gap",
+          "astId": 13085,
+          "type": "t_array:50<t_uint256>",
+          "src": "1002:29:55"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "PPM",
+          "astId": 1060,
+          "type": "t_uint24",
+          "src": "798:17:3"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "reserveRatio",
+          "astId": 1062,
+          "type": "t_uint32",
+          "src": "822:26:3"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "reserveAsset",
+          "astId": 1064,
+          "type": "t_address",
+          "src": "855:27:3"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "reserve",
+          "astId": 1066,
+          "type": "t_uint256",
+          "src": "888:22:3"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "virtualSupply",
+          "astId": 1068,
+          "type": "t_uint256",
+          "src": "917:28:3"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "virtualReserve",
+          "astId": 1070,
+          "type": "t_uint256",
+          "src": "951:29:3"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "heldContributions",
+          "astId": 1072,
+          "type": "t_uint256",
+          "src": "987:32:3"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "bancorFormula",
+          "astId": 1074,
+          "type": "t_address",
+          "src": "1026:34:3"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "creatorPercentage",
+          "astId": 1076,
+          "type": "t_uint256",
+          "src": "1067:32:3"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "cvgFee",
+          "astId": 1078,
+          "type": "t_uint256",
+          "src": "1105:21:3"
+        },
+        {
+          "contract": "BondedFungibleToken",
+          "path": "contracts/BondedFungibleToken.sol",
+          "label": "gasPriceOracle",
+          "astId": 1080,
+          "type": "t_address",
+          "src": "1133:29:3"
+        },
+        {
+          "contract": "Account",
+          "path": "contracts/Account.sol",
+          "label": "creator",
+          "astId": 22,
+          "type": "t_address",
+          "src": "478:22:0"
+        },
+        {
+          "contract": "Account",
+          "path": "contracts/Account.sol",
+          "label": "metadata",
+          "astId": 24,
+          "type": "t_bytes32",
+          "src": "506:23:0"
+        },
+        {
+          "contract": "Account",
+          "path": "contracts/Account.sol",
+          "label": "curServiceIndex",
+          "astId": 26,
+          "type": "t_uint256",
+          "src": "536:30:0"
+        },
+        {
+          "contract": "Account",
+          "path": "contracts/Account.sol",
+          "label": "services",
+          "astId": 30,
+          "type": "t_mapping<t_uint256>",
+          "src": "608:44:0"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "BancorFormula": {
+      "address": "0x2bd634034feb521a7a3808992919b71614f290d5",
+      "constructorCode": "60806040526040805190810160405280600381526020017f302e330000000000000000000000000000000000000000000000000000000000815250600090805190602001906200005192919062000f56565b503480156200005f57600080fd5b50701c35fedd14ffffffffffffffffffffffff600160206080811015156200008357fe5b0181905550701b0ce43b323fffffffffffffffffffffff60016021608081101515620000ab57fe5b01819055507019f0028ec1ffffffffffffffffffffffff60016022608081101515620000d357fe5b01819055507018ded91f0e7fffffffffffffffffffffff60016023608081101515620000fb57fe5b01819055507017d8ec7f0417ffffffffffffffffffffff600160246080811015156200012357fe5b01819055507016ddc6556cdbffffffffffffffffffffff600160256080811015156200014b57fe5b01819055507015ecf52776a1ffffffffffffffffffffff600160266080811015156200017357fe5b01819055507015060c256cb2ffffffffffffffffffffff600160276080811015156200019b57fe5b0181905550701428a2f98d72ffffffffffffffffffffff60016028608081101515620001c357fe5b01819055507013545598e5c23fffffffffffffffffffff60016029608081101515620001eb57fe5b0181905550701288c4161ce1dfffffffffffffffffffff6001602a6080811015156200021357fe5b01819055507011c592761c666fffffffffffffffffffff6001602b6080811015156200023b57fe5b018190555070110a688680a757ffffffffffffffffffff6001602c6080811015156200026357fe5b0181905550701056f1b5bedf77ffffffffffffffffffff6001602d6080811015156200028b57fe5b0181905550700faadceceeff8bffffffffffffffffffff6001602e608081101515620002b357fe5b0181905550700f05dc6b27edadffffffffffffffffffff6001602f608081101515620002db57fe5b0181905550700e67a5a25da4107fffffffffffffffffff600160306080811015156200030357fe5b0181905550700dcff115b14eedffffffffffffffffffff600160316080811015156200032b57fe5b0181905550700d3e7a392431239fffffffffffffffffff600160326080811015156200035357fe5b0181905550700cb2ff529eb71e4fffffffffffffffffff600160336080811015156200037b57fe5b0181905550700c2d415c3db974afffffffffffffffffff60016034608081101515620003a357fe5b0181905550700bad03e7d883f69bffffffffffffffffff60016035608081101515620003cb57fe5b0181905550700b320d03b2c343d5ffffffffffffffffff60016036608081101515620003f357fe5b0181905550700abc25204e02828dffffffffffffffffff600160376080811015156200041b57fe5b0181905550700a4b16f74ee4bb207fffffffffffffffff600160386080811015156200044357fe5b01819055507009deaf736ac1f569ffffffffffffffffff600160396080811015156200046b57fe5b0181905550700976bd9952c7aa957fffffffffffffffff6001603a6080811015156200049357fe5b01819055507009131271922eaa606fffffffffffffffff6001603b608081101515620004bb57fe5b01819055507008b380f3558668c46fffffffffffffffff6001603c608081101515620004e357fe5b0181905550700857ddf0117efa215bffffffffffffffff6001603d6080811015156200050b57fe5b01819055507007ffffffffffffffffffffffffffffffff6001603e6080811015156200053357fe5b01819055507007abbf6f6abb9d087fffffffffffffffff6001603f6080811015156200055b57fe5b018190555070075af62cbac95f7dfa7fffffffffffffff600160406080811015156200058357fe5b018190555070070d7fb7452e187ac13fffffffffffffff60016041608081101515620005ab57fe5b01819055507006c3390ecc8af379295fffffffffffffff60016042608081101515620005d357fe5b018190555070067c00a3b07ffc01fd6fffffffffffffff60016043608081101515620005fb57fe5b0181905550700637b647c39cbb9d3d27ffffffffffffff600160446080811015156200062357fe5b01819055507005f63b1fc104dbd39587ffffffffffffff600160456080811015156200064b57fe5b01819055507005b771955b36e12f7235ffffffffffffff600160466080811015156200067357fe5b018190555070057b3d49dda84556d6f6ffffffffffffff600160476080811015156200069b57fe5b018190555070054183095b2c8ececf30ffffffffffffff60016048608081101515620006c357fe5b018190555070050a28be635ca2b888f77fffffffffffff60016049608081101515620006eb57fe5b01819055507004d5156639708c9db33c3fffffffffffff6001604a6080811015156200071357fe5b01819055507004a23105873875bd52dfdfffffffffffff6001604b6080811015156200073b57fe5b0181905550700471649d87199aa990756fffffffffffff6001604c6080811015156200076357fe5b01819055507004429a21a029d4c1457cfbffffffffffff6001604d6080811015156200078b57fe5b0181905550700415bc6d6fb7dd71af2cb3ffffffffffff6001604e608081101515620007b357fe5b01819055507003eab73b3bbfe282243ce1ffffffffffff6001604f608081101515620007db57fe5b01819055507003c1771ac9fb6b4c18e229ffffffffffff600160506080811015156200080357fe5b0181905550700399e96897690418f785257fffffffffff600160516080811015156200082b57fe5b0181905550700373fc456c53bb779bf0ea9fffffffffff600160526080811015156200085357fe5b018190555070034f9e8e490c48e67e6ab8bfffffffffff600160536080811015156200087b57fe5b018190555070032cbfd4a7adc790560b3337ffffffffff60016054608081101515620008a357fe5b018190555070030b50570f6e5d2acca94613ffffffffff60016055608081101515620008cb57fe5b01819055507002eb40f9f620fda6b56c2861ffffffffff60016056608081101515620008f357fe5b01819055507002cc8340ecb0d0f520a6af58ffffffffff600160576080811015156200091b57fe5b01819055507002af09481380a0a35cf1ba02ffffffffff600160586080811015156200094357fe5b0181905550700292c5bdd3b92ec810287b1b3fffffffff600160596080811015156200096b57fe5b0181905550700277abdcdab07d5a77ac6d6b9fffffffff6001605a6080811015156200099357fe5b018190555070025daf6654b1eaa55fd64df5efffffffff6001605b608081101515620009bb57fe5b0181905550700244c49c648baa98192dce88b7ffffffff6001605c608081101515620009e357fe5b018190555070022ce03cd5619a311b2471268bffffffff6001605d60808110151562000a0b57fe5b0181905550700215f77c045fbe885654a44a0fffffffff6001605e60808110151562000a3357fe5b01819055507001ffffffffffffffffffffffffffffffff6001605f60808110151562000a5b57fe5b01819055507001eaefdbdaaee7421fc4d3ede5ffffffff6001606060808110151562000a8357fe5b01819055507001d6bd8b2eb257df7e8ca57b09bfffffff6001606160808110151562000aab57fe5b01819055507001c35fedd14b861eb0443f7f133fffffff6001606260808110151562000ad357fe5b01819055507001b0ce43b322bcde4a56e8ada5afffffff6001606360808110151562000afb57fe5b018190555070019f0028ec1fff007f5a195a39dfffffff6001606460808110151562000b2357fe5b018190555070018ded91f0e72ee74f49b15ba527ffffff6001606560808110151562000b4b57fe5b018190555070017d8ec7f04136f4e5615fd41a63ffffff6001606660808110151562000b7357fe5b018190555070016ddc6556cdb84bdc8d12d22e6fffffff6001606760808110151562000b9b57fe5b018190555070015ecf52776a1155b5bd8395814f7fffff6001606860808110151562000bc357fe5b018190555070015060c256cb23b3b3cc3754cf40ffffff6001606960808110151562000beb57fe5b01819055507001428a2f98d728ae223ddab715be3fffff6001606a60808110151562000c1357fe5b018190555070013545598e5c23276ccf0ede68034fffff6001606b60808110151562000c3b57fe5b01819055507001288c4161ce1d6f54b7f61081194fffff6001606c60808110151562000c6357fe5b018190555070011c592761c666aa641d5a01a40f17ffff6001606d60808110151562000c8b57fe5b0181905550700110a688680a7530515f3e6e6cfdcdffff6001606e60808110151562000cb357fe5b01819055507001056f1b5bedf75c6bcb2ce8aed428ffff6001606f60808110151562000cdb57fe5b01819055506ffaadceceeff8a0890f3875f008277fff6001607060808110151562000d0257fe5b01819055506ff05dc6b27edad306388a600f6ba0bfff6001607160808110151562000d2957fe5b01819055506fe67a5a25da41063de1495d5b18cdbfff6001607260808110151562000d5057fe5b01819055506fdcff115b14eedde6fc3aa5353f2e4fff6001607360808110151562000d7757fe5b01819055506fd3e7a3924312399f9aae2e0f868f8fff6001607460808110151562000d9e57fe5b01819055506fcb2ff529eb71e41582cccd5a1ee26fff6001607560808110151562000dc557fe5b01819055506fc2d415c3db974ab32a51840c0b67edff6001607660808110151562000dec57fe5b01819055506fbad03e7d883f69ad5b0a186184e06bff6001607760808110151562000e1357fe5b01819055506fb320d03b2c343d4829abd6075f0cc5ff6001607860808110151562000e3a57fe5b01819055506fabc25204e02828d73c6e80bcdb1a95bf6001607960808110151562000e6157fe5b01819055506fa4b16f74ee4bb2040a1ec6c15fbbf2df6001607a60808110151562000e8857fe5b01819055506f9deaf736ac1f569deb1b5ae3f36c130f6001607b60808110151562000eaf57fe5b01819055506f976bd9952c7aa957f5937d790ef650376001607c60808110151562000ed657fe5b01819055506f9131271922eaa6064b73a22d0bd4f2bf6001607d60808110151562000efd57fe5b01819055506f8b380f3558668c46c91c49a2f8e967b96001607e60808110151562000f2457fe5b01819055506f857ddf0117efa215952912839f6473e66001607f60808110151562000f4b57fe5b018190555062001005565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1062000f9957805160ff191683800117855562000fca565b8280016001018555821562000fca579182015b8281111562000fc957825182559160200191906001019062000fac565b5b50905062000fd9919062000fdd565b5090565b6200100291905b8082111562000ffe57600081600090555060010162000fe4565b5090565b90565b61197580620010156000396000f300",
+      "bodyBytecodeHash": "5a8099a602592aea34bc9016c12606fda2d4c026d079cc6d1606558fe78ccfeb",
+      "localBytecodeHash": "7bb1e5ef90d5b371509f6aa455cb1643651e017afa0feaa7c5c9b880ca87e1a2",
+      "deployedBytecodeHash": "7bb1e5ef90d5b371509f6aa455cb1643651e017afa0feaa7c5c9b880ca87e1a2",
+      "types": {
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:128<t_uint256>": {
+          "id": "t_array:128<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "128",
+          "kind": "array",
+          "label": "uint256[128]"
+        }
+      },
+      "storage": [
+        {
+          "contract": "BancorFormula",
+          "path": "contracts/bancor-contracts/converter/BancorFormula.sol",
+          "label": "version",
+          "astId": 6043,
+          "type": "t_string",
+          "src": "153:29:15"
+        },
+        {
+          "contract": "BancorFormula",
+          "path": "contracts/bancor-contracts/converter/BancorFormula.sol",
+          "label": "maxExpArray",
+          "astId": 6080,
+          "type": "t_array:128<t_uint256>",
+          "src": "1252:32:15"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": true,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": true,
+        "uninitializedBaseContracts": []
+      }
+    }
+  },
+  "solidityLibs": {},
+  "proxies": {
+    "convergent/GasPriceOracle": [
+      {
+        "address": "0x3a10be32ba388d4b7a58e5423fd2771ef7133c57",
+        "version": "0.1.0",
+        "implementation": "0x454d143cc77236b435c3f42ab02734d1bb78c27f"
+      }
+    ],
+    "convergent/ConvergentBeta": [
+      {
+        "address": "0x8cd58cd13044b5eced7187aa115273178b704cb6",
+        "version": "0.1.0",
+        "implementation": "0x12c7f1d435c0367057d3899acbc6db657e7b0ae8"
+      }
+    ]
+  },
+  "zosversion": "2",
+  "version": "0.1.0",
+  "app": {
+    "address": "0xfd05f0656fce4ecb950856a4e90f651fd34e1969"
+  },
+  "package": {
+    "address": "0x22d68b8b8cea91e1adc90a22c3b34dbefa342586"
+  },
+  "provider": {
+    "address": "0x03aed49fed4f46fc57230eb46dec411886c01dec"
+  },
+  "dependencies": {
+    "openzeppelin-eth": {
+      "package": "0xa44bb80b290de8a465d17b14269df53cf0b9bf4f",
+      "version": "2.0.2"
+    }
+  }
+}

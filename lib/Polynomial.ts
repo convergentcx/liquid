@@ -47,7 +47,7 @@ class Polynomial {
   }
 
   /**
-   * Solves for `x` value given and integral
+   * Solves for `x` value given an integral
    * @param integral The integral value to solve for
    */
   solveForX(integral: Decimal): Decimal {
