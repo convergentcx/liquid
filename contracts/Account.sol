@@ -3,17 +3,16 @@ pragma solidity ^0.4.24;
 import "zos-lib/contracts/Initializable.sol";
 import "zos-lib/contracts/upgradeability/AdminUpgradeabilityProxy.sol";
 
-import "./BondedFungibleToken.sol";
+import "./DoubleCurveToken.sol";
 
 /**
  * @title Account
  * @dev   Manages the logic for user accounts on Convergent.
  */
-contract Account is Initializable, BondedFungibleToken {
+contract Account is Initializable, DoubleCurveToken {
     event MetadataUpdated(bytes32 newMetadata);
     event ServiceRequested(address indexed requestor, uint8 indexed serviceIndex, string message);
 
-    address public creator;
     bytes32 public metadata;
 
     uint256 public curServiceIndex;
@@ -21,36 +20,34 @@ contract Account is Initializable, BondedFungibleToken {
     mapping (uint256 => uint256) public services;
 
     function initialize(
-        address _creator,
+        address _reserveAsset,
+        address _beneficiary,
+        uint256 _slopeN,
+        uint256 _slopeD,
+        uint256 _exponent,
+        uint256 _spreadN,
+        uint256 _spreadD,
+        uint256 _preMint,
         bytes32 _metadata,
         string _name,
-        string _symbol,
-        address _rAsset,
-        uint32 _rr,
-        uint256 _vSupply,
-        uint256 _vReserve,
-        uint256 _creatorPercent,
-        address _bancorFormulaAddress,
-        address _gasPriceOracle
+        string _symbol
     )   initializer
         public
-    {
-        creator = _creator;
-        metadata = _metadata;
-    
-        BondedFungibleToken.init(
-            _creator,
+    {    
+        DoubleCurveToken.initialize(
+            _reserveAsset,
+            _beneficiary,
+            _slopeN,
+            _slopeD,
+            _exponent,
+            _spreadN,
+            _spreadD,
+            _preMint,
             _name,
-            _symbol,
-            _rAsset,
-            _rr,
-            _vSupply,
-            _vReserve,
-            _creatorPercent,
-            _bancorFormulaAddress,
-            _gasPriceOracle
+            _symbol
         );
 
+        metadata = _metadata;
         emit MetadataUpdated(_metadata);
     }
 
@@ -97,7 +94,7 @@ contract Account is Initializable, BondedFungibleToken {
             "Must give this contract allowance first"
         );
 
-        transferFrom(msg.sender, creator, price);
+        transferFrom(msg.sender, creator(), price);
 
         emit ServiceRequested(msg.sender, _serviceIndex, _message);
     }
@@ -108,8 +105,12 @@ contract Account is Initializable, BondedFungibleToken {
         return _target.call.value(msg.value)(_data);
     }
 
+    function creator() public view returns (address) {
+        return beneficiary;
+    }
+
     modifier onlyCreator() {
-        require(msg.sender == creator);
+        require(msg.sender == creator());
         _;
     }
 }
