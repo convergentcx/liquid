@@ -6,6 +6,8 @@ import "openzeppelin-eth/contracts/ownership/Ownable.sol";
 import "openzeppelin-eth/contracts/math/SafeMath.sol";
 import "zos-lib/contracts/Initializable.sol";
 
+import "./GasPriceOracle.sol";
+
 contract CurveEvents {
     event Bought(address indexed buyer, uint256 amount, uint256 paid);
     event Contributed(address indexed buyer, uint256 contribution);
@@ -178,11 +180,11 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
 
     modifier validateGasPrice {
         require(
-            tx.gasprice <= gpo.maxGas(),
+            tx.gasprice <= GasPriceOracle(gpo).maxGas(),
             "Transaction gas price exceeds the oracle max gas."
         );
         require(
-            gpo.maxGas() > 0,
+            GasPriceOracle(gpo).maxGas() > 0,
             "System has been shut down at the oracle."
         );
         _;

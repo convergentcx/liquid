@@ -1,0 +1,480 @@
+{
+  "contracts": {
+    "GasPriceOracle": {
+      "address": "0x25faebb582cb01ac04ef69f7931525f596706210",
+      "constructorCode": "608060405234801561001057600080fd5b506107d1806100206000396000f300",
+      "bodyBytecodeHash": "a2c0fd9ff0c8b4d656d752c6e333e966c26370bdd625a77a19665515f41942ba",
+      "localBytecodeHash": "83544fc04b8db02d045f77a2dc452800f37a76e199361258c4ca6dc78afde4b7",
+      "deployedBytecodeHash": "83544fc04b8db02d045f77a2dc452800f37a76e199361258c4ca6dc78afde4b7",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1938,
+          "type": "t_bool",
+          "src": "757:24:12"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1940,
+          "type": "t_bool",
+          "src": "876:25:12"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1989,
+          "type": "t_array:50<t_uint256>",
+          "src": "1891:29:12"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
+          "label": "_owner",
+          "astId": 1222,
+          "type": "t_address",
+          "src": "301:22:7"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
+          "label": "______gap",
+          "astId": 1327,
+          "type": "t_array:50<t_uint256>",
+          "src": "2057:29:7"
+        },
+        {
+          "contract": "GasPriceOracle",
+          "path": "contracts/GasPriceOracle.sol",
+          "label": "maxGas",
+          "astId": 976,
+          "type": "t_uint256",
+          "src": "291:21:3"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "ConvergentBeta": {
+      "address": "0x00ea8f6109dd5ac2525f1763a810c60fd49c63c7",
+      "constructorCode": "608060405234801561001057600080fd5b50612018806100206000396000f300",
+      "bodyBytecodeHash": "74b1fa61f3f9d06f5a682e7bbd7dfdb3a51e387a5c5cd36a50452dba11c0d559",
+      "localBytecodeHash": "8f523539859c0a9581b046755f14a90f4599bdc861e5cf0be749b25610fbfeb0",
+      "deployedBytecodeHash": "8f523539859c0a9581b046755f14a90f4599bdc861e5cf0be749b25610fbfeb0",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_mapping<t_address>": {
+          "id": "t_mapping<t_address>",
+          "valueType": "t_address",
+          "label": "mapping(key => address)",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1938,
+          "type": "t_bool",
+          "src": "757:24:12"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1940,
+          "type": "t_bool",
+          "src": "876:25:12"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1989,
+          "type": "t_array:50<t_uint256>",
+          "src": "1891:29:12"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
+          "label": "_owner",
+          "astId": 1222,
+          "type": "t_address",
+          "src": "301:22:7"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-eth/contracts/ownership/Ownable.sol",
+          "label": "______gap",
+          "astId": 1327,
+          "type": "t_array:50<t_uint256>",
+          "src": "2057:29:7"
+        },
+        {
+          "contract": "ConvergentBeta",
+          "path": "contracts/ConvergentBeta.sol",
+          "label": "baseAccount",
+          "astId": 245,
+          "type": "t_address",
+          "src": "354:26:1"
+        },
+        {
+          "contract": "ConvergentBeta",
+          "path": "contracts/ConvergentBeta.sol",
+          "label": "gasPriceOracle",
+          "astId": 247,
+          "type": "t_address",
+          "src": "386:29:1"
+        },
+        {
+          "contract": "ConvergentBeta",
+          "path": "contracts/ConvergentBeta.sol",
+          "label": "accountToCreator",
+          "astId": 251,
+          "type": "t_mapping<t_address>",
+          "src": "422:52:1"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "Account": {
+      "address": "0xa97df65be6c7bf3040df0e086c495e57564032c8",
+      "constructorCode": "608060405234801561001057600080fd5b50613af8806100206000396000f300",
+      "bodyBytecodeHash": "a56b2bb584ae2777245cf3eae22ac74157daf9f9842f7edffdc8120c122662e2",
+      "localBytecodeHash": "3eb444eec77b46ab6996033f550b72c1b52bea4e3208e3e21bf9ced1488dd22f",
+      "deployedBytecodeHash": "3eb444eec77b46ab6996033f550b72c1b52bea4e3208e3e21bf9ced1488dd22f",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_uint8": {
+          "id": "t_uint8",
+          "kind": "elementary",
+          "label": "uint8"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_bytes32": {
+          "id": "t_bytes32",
+          "kind": "elementary",
+          "label": "bytes32"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1938,
+          "type": "t_bool",
+          "src": "757:24:12"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1940,
+          "type": "t_bool",
+          "src": "876:25:12"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1989,
+          "type": "t_array:50<t_uint256>",
+          "src": "1891:29:12"
+        },
+        {
+          "contract": "ERC20",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
+          "label": "_balances",
+          "astId": 1344,
+          "type": "t_mapping<t_uint256>",
+          "src": "491:46:8"
+        },
+        {
+          "contract": "ERC20",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
+          "label": "_allowed",
+          "astId": 1350,
+          "type": "t_mapping<t_uint256>",
+          "src": "542:66:8"
+        },
+        {
+          "contract": "ERC20",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
+          "label": "_totalSupply",
+          "astId": 1352,
+          "type": "t_uint256",
+          "src": "613:28:8"
+        },
+        {
+          "contract": "ERC20",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
+          "label": "______gap",
+          "astId": 1778,
+          "type": "t_array:50<t_uint256>",
+          "src": "7048:29:8"
+        },
+        {
+          "contract": "ERC20Detailed",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
+          "label": "_name",
+          "astId": 1789,
+          "type": "t_string",
+          "src": "382:20:9"
+        },
+        {
+          "contract": "ERC20Detailed",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
+          "label": "_symbol",
+          "astId": 1791,
+          "type": "t_string",
+          "src": "406:22:9"
+        },
+        {
+          "contract": "ERC20Detailed",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
+          "label": "_decimals",
+          "astId": 1793,
+          "type": "t_uint8",
+          "src": "432:23:9"
+        },
+        {
+          "contract": "ERC20Detailed",
+          "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
+          "label": "______gap",
+          "astId": 1845,
+          "type": "t_array:50<t_uint256>",
+          "src": "1002:29:9"
+        },
+        {
+          "contract": "DoubleCurveToken",
+          "path": "contracts/DoubleCurveToken.sol",
+          "label": "reserveAsset",
+          "astId": 478,
+          "type": "t_address",
+          "src": "766:27:2"
+        },
+        {
+          "contract": "DoubleCurveToken",
+          "path": "contracts/DoubleCurveToken.sol",
+          "label": "reserve",
+          "astId": 480,
+          "type": "t_uint256",
+          "src": "799:22:2"
+        },
+        {
+          "contract": "DoubleCurveToken",
+          "path": "contracts/DoubleCurveToken.sol",
+          "label": "beneficiary",
+          "astId": 482,
+          "type": "t_address",
+          "src": "880:26:2"
+        },
+        {
+          "contract": "DoubleCurveToken",
+          "path": "contracts/DoubleCurveToken.sol",
+          "label": "contributions",
+          "astId": 484,
+          "type": "t_uint256",
+          "src": "912:28:2"
+        },
+        {
+          "contract": "DoubleCurveToken",
+          "path": "contracts/DoubleCurveToken.sol",
+          "label": "slopeN",
+          "astId": 486,
+          "type": "t_uint256",
+          "src": "947:21:2"
+        },
+        {
+          "contract": "DoubleCurveToken",
+          "path": "contracts/DoubleCurveToken.sol",
+          "label": "slopeD",
+          "astId": 488,
+          "type": "t_uint256",
+          "src": "974:21:2"
+        },
+        {
+          "contract": "DoubleCurveToken",
+          "path": "contracts/DoubleCurveToken.sol",
+          "label": "exponent",
+          "astId": 490,
+          "type": "t_uint256",
+          "src": "1001:23:2"
+        },
+        {
+          "contract": "DoubleCurveToken",
+          "path": "contracts/DoubleCurveToken.sol",
+          "label": "spreadN",
+          "astId": 492,
+          "type": "t_uint256",
+          "src": "1030:22:2"
+        },
+        {
+          "contract": "DoubleCurveToken",
+          "path": "contracts/DoubleCurveToken.sol",
+          "label": "spreadD",
+          "astId": 494,
+          "type": "t_uint256",
+          "src": "1118:22:2"
+        },
+        {
+          "contract": "DoubleCurveToken",
+          "path": "contracts/DoubleCurveToken.sol",
+          "label": "gpo",
+          "astId": 496,
+          "type": "t_address",
+          "src": "1289:18:2"
+        },
+        {
+          "contract": "Account",
+          "path": "contracts/Account.sol",
+          "label": "metadata",
+          "astId": 22,
+          "type": "t_bytes32",
+          "src": "472:23:0"
+        },
+        {
+          "contract": "Account",
+          "path": "contracts/Account.sol",
+          "label": "curServiceIndex",
+          "astId": 24,
+          "type": "t_uint256",
+          "src": "502:30:0"
+        },
+        {
+          "contract": "Account",
+          "path": "contracts/Account.sol",
+          "label": "services",
+          "astId": 28,
+          "type": "t_mapping<t_uint256>",
+          "src": "574:44:0"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    }
+  },
+  "solidityLibs": {},
+  "proxies": {
+    "convergent/GasPriceOracle": [
+      {
+        "address": "0x6225718f5f3950035b6301f51fe32494b5e23adf",
+        "version": "0.1.0",
+        "implementation": "0x25faebb582cb01ac04ef69f7931525f596706210"
+      }
+    ],
+    "convergent/ConvergentBeta": [
+      {
+        "address": "0xc21b0cb3aa8767124e34e4cb064331618e030de6",
+        "version": "0.1.0",
+        "implementation": "0x00ea8f6109dd5ac2525f1763a810c60fd49c63c7"
+      }
+    ]
+  },
+  "zosversion": "2",
+  "version": "0.1.0",
+  "dependencies": {
+    "openzeppelin-eth": {
+      "package": "0xa44bb80b290de8a465d17b14269df53cf0b9bf4f",
+      "version": "2.0.2"
+    }
+  }
+}
