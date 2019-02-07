@@ -17,19 +17,21 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
 
     function () payable { revert("Fallback disabled"); }
 
-    address reserveAsset;
-    uint256 reserve;    // Amount held in contract to collaterize sells.
+    address public reserveAsset;
+    uint256 public reserve;    // Amount held in contract to collaterize sells.
 
-    address beneficiary;
-    uint256 contributions;
+    address public beneficiary;
+    uint256 public contributions;
 
-    uint256 slopeN;
-    uint256 slopeD;
-    uint256 exponent;
-    uint256 spreadN;    // Spread is actually only the area under the sell curve
-    uint256 spreadD;    //  represented as a fraction of the whole.
+    uint256 public slopeN;
+    uint256 public slopeD;
+    uint256 public exponent;
+    uint256 public spreadN;    // Spread is actually only the area under the sell curve
+    uint256 public spreadD;    //  represented as a fraction of the whole.
 
     // uint256 preMint;    // Pre-mint is used to start the token price at the desired point.
+
+    address public gpo; // The gas price oracle
 
     function initialize(
         address _reserveAsset,
@@ -41,7 +43,8 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
         uint256 _spreadD,
         uint256 _preMint,
         string _name,
-        string _symbol
+        string _symbol,
+        address _gasPriceOracle
     )   public
         initializer
     {
@@ -55,6 +58,7 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
         exponent = _exponent;
         spreadN = _spreadN;
         spreadD = _spreadD;
+        gpo = _gasPriceOracle;
     }
 
     function withdraw() public returns (bool) {
@@ -69,7 +73,7 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
     }
 
     function buy(uint256 _tokens, uint256 _maxSpend)
-        public payable returns (bool)
+        public payable validateGasPrice returns (bool)
     {
         uint256 cost = priceToBuy(_tokens);
         // 
@@ -98,7 +102,7 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
     }
 
     function sell(uint256 _tokens, uint256 _minReturn)
-        public returns (bool)
+        public validateGasPrice returns (bool)
     {
         require(
             balanceOf(msg.sender) >= _tokens
@@ -170,5 +174,17 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
         public view returns (uint256)
     {
         return currentPrice().mul(totalSupply());
+    }
+
+    modifier validateGasPrice {
+        require(
+            tx.gasprice <= gpo.maxGas(),
+            "Transaction gas price exceeds the oracle max gas."
+        );
+        require(
+            gpo.maxGas() > 0,
+            "System has been shut down at the oracle."
+        );
+        _;
     }
 }

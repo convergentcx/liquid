@@ -5,8 +5,7 @@
   "contracts": {
     "ConvergentBeta": "ConvergentBeta",
     "Account": "Account",
-    "BancorFormula": "BancorFormula",
-    "GasPriceOracle": "GasPriceOracle"
+    "BancorFormula": "BancorFormula"
   },
   "dependencies": {
     "openzeppelin-eth": "^2.0.2"

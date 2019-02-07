@@ -10,17 +10,20 @@ contract ConvergentBeta is Initializable, Ownable {
     event NewAccount(address account, address indexed creator);
 
     address public baseAccount;
+    address public gasPriceOracle;
 
     mapping (address => address) public accountToCreator;
 
     function initialize(
-        address _baseAccount
+        address _baseAccount,
+        address _gasPriceOracle
     )   public
         initializer
     {
         Ownable.initialize(tx.origin);
 
         baseAccount = _baseAccount;
+        gasPriceOracle = _gasPriceOracle;
     }
 
     function setBaseAccount(address _newBaseAccount)
@@ -34,17 +37,6 @@ contract ConvergentBeta is Initializable, Ownable {
         baseAccount = _newBaseAccount;
         return true;
     }
-
-    // function setGasPriceOracle(address _gasPriceOracle)
-    //     public onlyOwner returns (bool)
-    // {
-    //     require(
-    //         _gasPriceOracle != address(0x0),
-    //         "Expected paramter `_gasPriceOracle`"
-    //     );
-    //     gasPriceOracle = _gasPriceOracle;
-    //     return true;
-    // }
 
     /**
      * @dev Create a new account with ConvergentBeta proxy set as admin.
@@ -64,7 +56,7 @@ contract ConvergentBeta is Initializable, Ownable {
     )   public returns (address)
     {
         bytes memory data = abi.encodeWithSignature(
-            "initialize(address,address,uint256,uint256,uint256,uin256,uin256,uin256,bytes32,string,string)",
+            "initialize(address,address,uint256,uint256,uint256,uin256,uin256,uin256,bytes32,string,string,address)",
             _reserveAsset,
             msg.sender,
             _slopeN,
@@ -75,7 +67,8 @@ contract ConvergentBeta is Initializable, Ownable {
             _preMint,
             _metadata,
             _name,
-            _symbol
+            _symbol,
+            gasPriceOracle
         );
         Account account = Account(new AdminUpgradeabilityProxy(baseAccount, data));
         emit NewAccount(address(account), msg.sender);

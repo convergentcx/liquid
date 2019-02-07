@@ -30,7 +30,8 @@ contract Account is Initializable, DoubleCurveToken {
         uint256 _preMint,
         bytes32 _metadata,
         string _name,
-        string _symbol
+        string _symbol,
+        address _gasPriceOracle
     )   initializer
         public
     {    
@@ -44,7 +45,8 @@ contract Account is Initializable, DoubleCurveToken {
             _spreadD,
             _preMint,
             _name,
-            _symbol
+            _symbol,
+            _gasPriceOracle
         );
 
         metadata = _metadata;

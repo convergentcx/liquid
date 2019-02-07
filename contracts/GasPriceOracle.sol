@@ -6,25 +6,21 @@ import "zos-lib/contracts/Initializable.sol";
 /// If maxGasPrice returns 0 no function will be able to 
 /// succeed on Convergent Account contracts.
 contract GasPriceOracle is Initializable, Ownable {
-    uint256 public maxGasPrice;
+    uint256 public maxGas;
 
     function initialize(
-        uint256 _maxGasPrice
+        uint256 _maxGas
     )   public
         initializer
     {
         Ownable.initialize(tx.origin);
-        maxGasPrice = _maxGasPrice;
+        maxGas = _maxGas;
     }
 
-    function setGasPrice(uint256 _maxGasPrice)
+    function setGasPrice(uint256 _maxGas)
         public onlyOwner returns (bool)
     {
-        maxGasPrice = _maxGasPrice;
+        maxGas = _maxGas;
         return true;
-    }
-
-    function validateGasPrice(uint256 _gp) public view returns (bool) {
-        return _gp <= maxGasPrice;
     }
 }
