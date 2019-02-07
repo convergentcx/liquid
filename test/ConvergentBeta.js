@@ -1,7 +1,6 @@
 const Account = artifacts.require('Account');
 const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
-const BancorFormula = artifacts.require('BancorFormula');
-const BondedFungibleToken = artifacts.require('BondedFungibleToken');
+const DoubleCurveToken = artifacts.require('DoubleCurveToken');
 const ConvergentBeta = artifacts.require('ConvergentBeta');
 const GasPriceOracle = artifacts.require('GasPriceOracle');
 const MockERC20 = artifacts.require('MockERC20');
@@ -59,16 +58,13 @@ const findEventFromReceipt = (receipt, eventName) => (
 
 
 contract('ConvergentBeta', (accounts) => {
-  let bancorFormula, baseAccount, cvgBeta, gasPriceOracle, mERC20;
+  let baseAccount, cvgBeta, gasPriceOracle, mERC20;
 
   before(async () => {
     gasPriceOracle = await GasPriceOracle.new();
-    logGasDeploy(gasPriceOracle);
+    logGasDeploy(gasPriceOracle, "Gas Price Oracle");
     // For testing purposes set it really high for now
     await gasPriceOracle.initialize(toWei('500', 'ether'));
-
-    bancorFormula = await BancorFormula.new();
-    logGasDeploy(bancorFormula, "Bancor Formula");
 
     mERC20 = await MockERC20.new(toWei('1000000', 'ether'));
     logGasDeploy(mERC20, "Mock ERC20");
@@ -80,7 +76,6 @@ contract('ConvergentBeta', (accounts) => {
     logGasDeploy(cvgBeta, "Convergent Beta");
     const initTx = await cvgBeta.initialize(
       baseAccount.address,
-      bancorFormula.address,
       gasPriceOracle.address,
     );
     logGasTx(initTx, "ConvergentBeta::initialize()");
@@ -92,10 +87,10 @@ contract('ConvergentBeta', (accounts) => {
       retBaseAccount
     ).to.equal(baseAccount.address);
 
-    const retBancorFormula = await cvgBeta.bancorFormula();
+    const retGPO = await cvgBeta.gasPriceOracle();
     expect(
-      retBancorFormula
-    ).to.equal(bancorFormula.address);
+      retGPO
+    ).to.equal(gasPriceOracle.address);
   });
 
   it('only allows Owner() to set baseAccount', async () => {
@@ -134,22 +129,18 @@ contract('ConvergentBeta', (accounts) => {
 
   it('creates a new account', async () => {
     const randBytes = randomBytes32();
-    /**
-     * Linear Curve
-     * RR - 500000
-     * vSupply - 1000000000000000000
-     * vReserve - 500000000000000
-     */
 
     const newAccountTx = await cvgBeta.newAccount(
-      randBytes,
-      "Test Token",
-      "TEST",
       mERC20.address,
-      "500000",
-      "1000000000000000000",
-      "500000000000000",
-      "10",
+      "1",
+      "1000",
+      "1",
+      "60",
+      "100",
+      "0",
+      randBytes,
+      "Logan",
+      "FCK",
       { from: accounts[3] },
     );
 
@@ -184,34 +175,20 @@ contract('ConvergentBeta', (accounts) => {
       retServiceIndex.toString()
     ).to.equal('0');
 
-    // Now test the bft parts
-    // const retBFT = await acc.bft();
-    // console.log(retBFT);
-    // const bft = await BondedFungibleToken.at(retBFT);
-    const retPPM = await acc.PPM();
+    const retCreator = await acc.creator();
     expect(
-      retPPM.toString()
-    ).to.equal("1000000");
-
-    const retRR = await acc.reserveRatio();
-    expect(
-      retRR.toString()
-    ).to.equal("500000");
-
-    const retOwner = await acc.owner();
-    expect(
-      retOwner.toLowerCase()
+      retCreator.toLowerCase()
     ).to.equal(accounts[3].toLowerCase());
 
     const retName = await acc.name();
     expect(
       retName
-    ).to.equal("Test Token");
+    ).to.equal("Logan");
 
     const retSymbol = await acc.symbol();
     expect(
       retSymbol
-    ).to.equal("TEST");
+    ).to.equal("FCK");
 
     const retRAsset = await acc.reserveAsset();
     expect(
@@ -223,42 +200,55 @@ contract('ConvergentBeta', (accounts) => {
       retReserve.toString()
     ).to.equal("0");
 
-    const retVS = await acc.virtualSupply();
+    const retBeneficiary = await acc.beneficiary();
     expect(
-      retVS.toString()
-    ).to.equal("1000000000000000000")
+      retBeneficiary.toLowerCase()
+    ).to.equal(accounts[3].toLowerCase());
 
-    const retVR = await acc.virtualReserve();
+    const retContributions = await acc.contributions();
     expect(
-      retVR.toString()
-    ).to.equal("500000000000000");
+      retContributions.toString()
+    ).to.equal('0');
 
-    const retHC = await acc.heldContributions();
+    const retSlopeN = await acc.slopeN();
     expect(
-      retHC.toString()
-    ).to.equal("0");
+      retSlopeN.toString()
+    ).to.equal("1");
 
-    const retBF = await acc.bancorFormula();
+    const retSlopeD = await acc.slopeD();
     expect(
-      retBF.toLowerCase()
-    ).to.equal(bancorFormula.address.toLowerCase());
+      retSlopeD.toString()
+    ).to.equal("1000")
 
-    const retCP = await acc.creatorPercentage();
+    const retExponent = await acc.exponent();
     expect(
-      retCP.toString()
-    ).to.equal("10");
+      retExponent.toString()
+    ).to.equal("1")
+
+    const retSpreadN = await acc.spreadN();
+    expect(
+      retSpreadN.toString()
+    ).to.equal("60")
+
+    const retSpreadD = await acc.spreadD();
+    expect(
+      retSpreadD.toString()
+    ).to.equal("100")
+
   });
 
   it('Tries to update an account', async () => {
     const newAccountTx = await cvgBeta.newAccount(
-      randomBytes32(),
-      "Test Token",
-      "TEST",
       mERC20.address,
-      "500000",
-      "1000000000000000000",
-      "500000000000000",
-      "10",
+      "1",
+      "1000",
+      "1",
+      "60",
+      "100",
+      "0",
+      randomBytes32(),
+      "Logan",
+      "FCK",
       { from: accounts[3] },
     );
 
@@ -285,12 +275,12 @@ contract('ConvergentBeta', (accounts) => {
     ).to.equal(baseAccount.toLowerCase());
 
     // Must upgrade to a contract address
-    await cvgBeta.setBaseAccount(bancorFormula.address);
+    await cvgBeta.setBaseAccount(mERC20.address);
     await cvgBeta.upgradeAccount(acc.address, { from: accounts[3] });
     const impl2 = await cvgBeta.getImplementationForAccount(account);
     expect(
       impl2.toLowerCase()
-    ).to.equal(bancorFormula.address.toLowerCase());
+    ).to.equal(mERC20.address.toLowerCase());
 
     // Disallows non-owner to update baseAccount
     try {

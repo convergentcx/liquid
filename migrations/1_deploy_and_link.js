@@ -1,9 +1,4 @@
-const BancorAdaptor = artifacts.require('BancorAdaptor');
-const BancorFormula = artifacts.require('BancorFormula');
-const BondedFungibleToken = artifacts.require('BondedFungibleToken');
-const ExponentLib = artifacts.require('ExponentLib');
-const FixidityLib = artifacts.require('FixidityLib');
-const LogarithmLib = artifacts.require('LogarithmLib');
+const DoubleCurveToken = artifacts.require('DoubleCurveToken');
 const Migrations = artifacts.require('Migrations');
 const SafeMath = artifacts.require('SafeMath');
 
@@ -25,9 +20,6 @@ module.exports = async deployer => {
   /// SafeMath
   await deployer.deploy(SafeMath);
 
-  // Bancor Formula
-  await deployer.deploy(BancorFormula);
-
   // Fixidity
   // await deployFixidity(deployer);
 
@@ -36,9 +28,9 @@ module.exports = async deployer => {
   // await deployer.link(LogarithmLib, BancorAdaptor);
   // await deployer.link(ExponentLib, BancorAdaptor);
 
-  /// BondedFungibleToken
-  // await deployer.link(ExponentLib, BondedFungibleToken);
-  // await deployer.link(FixidityLib, BondedFungibleToken);
-  await deployer.link(SafeMath, BondedFungibleToken);
-  await deployer.deploy(BondedFungibleToken);
+  /// DoubleCurveToken
+  // await deployer.link(ExponentLib, DoubleCurveToken);
+  // await deployer.link(FixidityLib, DoubleCurveToken);
+  await deployer.link(SafeMath, DoubleCurveToken);
+  await deployer.deploy(DoubleCurveToken);
 }

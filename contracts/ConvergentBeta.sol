@@ -56,7 +56,7 @@ contract ConvergentBeta is Initializable, Ownable {
     )   public returns (address)
     {
         bytes memory data = abi.encodeWithSignature(
-            "initialize(address,address,uint256,uint256,uint256,uin256,uin256,uin256,bytes32,string,string,address)",
+            "initialize(address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes32,string,string,address)",
             _reserveAsset,
             msg.sender,
             _slopeN,

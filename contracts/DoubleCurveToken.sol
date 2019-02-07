@@ -51,7 +51,10 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
         initializer
     {
         ERC20Detailed.initialize(_name, _symbol, 18);
-        _mint(address(0x1337), _preMint);
+        
+        if (_preMint > 0) {
+            _mint(address(0x1337), _preMint);
+        }
 
         reserveAsset = _reserveAsset;
         beneficiary = _beneficiary;
