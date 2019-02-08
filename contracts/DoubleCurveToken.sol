@@ -136,13 +136,14 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
     {
         uint256 nexp = exponent.add(1);
 
-        return slopeN.mul(_toX ** nexp).div(nexp).div(slopeD);
+        // The below assumes we have 18 decimals on the token.
+        return slopeN.mul(_toX ** nexp).div(nexp).div(slopeD).div(10**18);
     }
 
     function solveForY(uint256 _X)
         internal view returns (uint256)
     {
-        return slopeN.mul(_X ** exponent).div(slopeN);
+        return slopeN.mul(_X ** exponent).div(slopeD);
     }
 
     function priceToBuy(uint256 _tokens)
@@ -178,7 +179,8 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
     function marketCap()
         public view returns (uint256)
     {
-        return currentPrice().mul(totalSupply());
+        // Assumes 18 decimals
+        return currentPrice().mul(totalSupply()).div(10**18);
     }
 
     modifier validateGasPrice {
