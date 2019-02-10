@@ -308,5 +308,45 @@ contract('ConvergentBeta', (accounts) => {
     // Now just make sure something on account works
     const tx = await acc.addService(23, { from: accounts[3] });
     expect(tx.receipt.status).to.be.true;
-  })
+  });
+
+  it('Tries to purchase a service', async () => {
+    const newAccountTx = await cvgBeta.newAccount(
+      "0x0000000000000000000000000000000000000000",
+      "1",
+      "1000",
+      "1",
+      "60",
+      "100",
+      "0",
+      randomBytes32(),
+      "Test Token",
+      "TEST",
+      {from: accounts[7]},
+    );
+
+    const newAccountEvent = findEventFromReceipt(newAccountTx.receipt, "NewAccount");
+    const { account, creator } = newAccountEvent.args;
+    expect(
+      creator.toLowerCase()
+    ).to.equal(accounts[7].toLowerCase());
+
+    const acc = await Account.at(account);
+    const impl = await cvgBeta.getImplementationForAccount(account);
+    const baseAccount = await cvgBeta.baseAccount();
+    expect(
+      impl.toLowerCase()
+    ).to.equal(baseAccount.toLowerCase());
+
+    const setServiceTx = await acc.addService(10, { from: accounts[7] });
+    expect(setServiceTx.receipt.status).to.be.true;
+
+    const price = await acc.priceToBuy(1000000);
+
+    const buyTx = await acc.buy(1000000, price.toString(), { from: accounts[7] });
+    expect(buyTx.receipt.status).to.be.true;
+
+    const serviceRequest = await acc.requestService(0, 'hello  world blah blah', { from: accounts[7]});
+    console.log(serviceRequest)
+  });
 });

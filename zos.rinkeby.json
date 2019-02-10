@@ -1,11 +1,11 @@
 {
   "contracts": {
     "Account": {
-      "address": "0xc0adab9bd497cbba876f9d2cc9e6c8a23855442b",
-      "constructorCode": "608060405234801561001057600080fd5b50613b36806100206000396000f300",
-      "bodyBytecodeHash": "5bda8d75eaaa44d769fe8bf31e54b88b356e2dea509c3f0f789a9a938844defa",
-      "localBytecodeHash": "55ea918082bd1a1296719c2a78dbded0d95e0806f737896541640de6e91a4b04",
-      "deployedBytecodeHash": "55ea918082bd1a1296719c2a78dbded0d95e0806f737896541640de6e91a4b04",
+      "address": "0xf58c317b9ded4d48506e73257f07779f8d39f9a9",
+      "constructorCode": "608060405234801561001057600080fd5b50613b34806100206000396000f300",
+      "bodyBytecodeHash": "de9c6edd56a2f80c38fc21e6556d0220bd194ab45ecedaeb1d74b71e96493fc6",
+      "localBytecodeHash": "12f6d937609dba9d5b4d29bdd3a327da9b59be677e152f1cb376189950dd017b",
+      "deployedBytecodeHash": "12f6d937609dba9d5b4d29bdd3a327da9b59be677e152f1cb376189950dd017b",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -56,7 +56,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 1953,
+          "astId": 1954,
           "type": "t_bool",
           "src": "757:24:12"
         },
@@ -64,7 +64,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 1955,
+          "astId": 1956,
           "type": "t_bool",
           "src": "876:25:12"
         },
@@ -72,7 +72,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 2004,
+          "astId": 2005,
           "type": "t_array:50<t_uint256>",
           "src": "1891:29:12"
         },
@@ -80,7 +80,7 @@
           "contract": "ERC20",
           "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
           "label": "_balances",
-          "astId": 1359,
+          "astId": 1360,
           "type": "t_mapping<t_uint256>",
           "src": "491:46:8"
         },
@@ -88,7 +88,7 @@
           "contract": "ERC20",
           "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
           "label": "_allowed",
-          "astId": 1365,
+          "astId": 1366,
           "type": "t_mapping<t_uint256>",
           "src": "542:66:8"
         },
@@ -96,7 +96,7 @@
           "contract": "ERC20",
           "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
           "label": "_totalSupply",
-          "astId": 1367,
+          "astId": 1368,
           "type": "t_uint256",
           "src": "613:28:8"
         },
@@ -104,7 +104,7 @@
           "contract": "ERC20",
           "path": "openzeppelin-eth/contracts/token/ERC20/ERC20.sol",
           "label": "______gap",
-          "astId": 1793,
+          "astId": 1794,
           "type": "t_array:50<t_uint256>",
           "src": "7048:29:8"
         },
@@ -112,7 +112,7 @@
           "contract": "ERC20Detailed",
           "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
           "label": "_name",
-          "astId": 1804,
+          "astId": 1805,
           "type": "t_string",
           "src": "382:20:9"
         },
@@ -120,7 +120,7 @@
           "contract": "ERC20Detailed",
           "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
           "label": "_symbol",
-          "astId": 1806,
+          "astId": 1807,
           "type": "t_string",
           "src": "406:22:9"
         },
@@ -128,7 +128,7 @@
           "contract": "ERC20Detailed",
           "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
           "label": "_decimals",
-          "astId": 1808,
+          "astId": 1809,
           "type": "t_uint8",
           "src": "432:23:9"
         },
@@ -136,7 +136,7 @@
           "contract": "ERC20Detailed",
           "path": "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol",
           "label": "______gap",
-          "astId": 1860,
+          "astId": 1861,
           "type": "t_array:50<t_uint256>",
           "src": "1002:29:9"
         },
@@ -144,7 +144,7 @@
           "contract": "DoubleCurveToken",
           "path": "contracts/DoubleCurveToken.sol",
           "label": "reserveAsset",
-          "astId": 478,
+          "astId": 479,
           "type": "t_address",
           "src": "766:27:2"
         },
@@ -152,7 +152,7 @@
           "contract": "DoubleCurveToken",
           "path": "contracts/DoubleCurveToken.sol",
           "label": "reserve",
-          "astId": 480,
+          "astId": 481,
           "type": "t_uint256",
           "src": "799:22:2"
         },
@@ -160,7 +160,7 @@
           "contract": "DoubleCurveToken",
           "path": "contracts/DoubleCurveToken.sol",
           "label": "beneficiary",
-          "astId": 482,
+          "astId": 483,
           "type": "t_address",
           "src": "880:26:2"
         },
@@ -168,7 +168,7 @@
           "contract": "DoubleCurveToken",
           "path": "contracts/DoubleCurveToken.sol",
           "label": "contributions",
-          "astId": 484,
+          "astId": 485,
           "type": "t_uint256",
           "src": "912:28:2"
         },
@@ -176,7 +176,7 @@
           "contract": "DoubleCurveToken",
           "path": "contracts/DoubleCurveToken.sol",
           "label": "slopeN",
-          "astId": 486,
+          "astId": 487,
           "type": "t_uint256",
           "src": "947:21:2"
         },
@@ -184,7 +184,7 @@
           "contract": "DoubleCurveToken",
           "path": "contracts/DoubleCurveToken.sol",
           "label": "slopeD",
-          "astId": 488,
+          "astId": 489,
           "type": "t_uint256",
           "src": "974:21:2"
         },
@@ -192,7 +192,7 @@
           "contract": "DoubleCurveToken",
           "path": "contracts/DoubleCurveToken.sol",
           "label": "exponent",
-          "astId": 490,
+          "astId": 491,
           "type": "t_uint256",
           "src": "1001:23:2"
         },
@@ -200,7 +200,7 @@
           "contract": "DoubleCurveToken",
           "path": "contracts/DoubleCurveToken.sol",
           "label": "spreadN",
-          "astId": 492,
+          "astId": 493,
           "type": "t_uint256",
           "src": "1030:22:2"
         },
@@ -208,7 +208,7 @@
           "contract": "DoubleCurveToken",
           "path": "contracts/DoubleCurveToken.sol",
           "label": "spreadD",
-          "astId": 494,
+          "astId": 495,
           "type": "t_uint256",
           "src": "1118:22:2"
         },
@@ -216,7 +216,7 @@
           "contract": "DoubleCurveToken",
           "path": "contracts/DoubleCurveToken.sol",
           "label": "gpo",
-          "astId": 496,
+          "astId": 497,
           "type": "t_address",
           "src": "1289:18:2"
         },
@@ -226,7 +226,7 @@
           "label": "metadata",
           "astId": 22,
           "type": "t_bytes32",
-          "src": "472:23:0"
+          "src": "474:23:0"
         },
         {
           "contract": "Account",
@@ -234,7 +234,7 @@
           "label": "curServiceIndex",
           "astId": 24,
           "type": "t_uint256",
-          "src": "502:30:0"
+          "src": "504:30:0"
         },
         {
           "contract": "Account",
@@ -242,7 +242,7 @@
           "label": "services",
           "astId": 28,
           "type": "t_mapping<t_uint256>",
-          "src": "574:44:0"
+          "src": "576:44:0"
         }
       ],
       "warnings": {

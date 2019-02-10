@@ -11,7 +11,7 @@ import "./DoubleCurveToken.sol";
  */
 contract Account is Initializable, DoubleCurveToken {
     event MetadataUpdated(bytes32 newMetadata);
-    event ServiceRequested(address indexed requestor, uint8 indexed serviceIndex, string message);
+    event ServiceRequested(address indexed requestor, uint256 indexed serviceIndex, string message);
 
     bytes32 public metadata;
 
@@ -85,18 +85,27 @@ contract Account is Initializable, DoubleCurveToken {
     }
 
     function requestService(
-        uint8 _serviceIndex,
+        uint256 _serviceIndex,
         string _message
     )   public
     {
         uint256 price = services[_serviceIndex];
         
         require(
-            allowance(msg.sender, address(this)) >= price,
-            "Must give this contract allowance first"
+            balanceOf(msg.sender) >= price,
+            "Must have enough tokens to request this service"
         );
 
-        transferFrom(msg.sender, creator(), price);
+        // require(
+            // allowance(msg.sender, address(this)) >= price,
+            // "Must give this contract allowance first"
+        // );
+
+        // transferFrom(msg.sender, creator(), price);
+
+        // The evil way to do this:
+        _burn(msg.sender, price);
+        _mint(creator(), price);
 
         emit ServiceRequested(msg.sender, _serviceIndex, _message);
     }
