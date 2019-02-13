@@ -4,3 +4,5 @@ build
 scratch.txt
 yarn-error.log
 env.sh
+main.key
+env

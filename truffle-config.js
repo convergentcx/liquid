@@ -2,7 +2,7 @@
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
 
-const { PK, PK2 } = process.env;
+const { M_PK, PK, PK2 } = process.env;
 // console.log(pk);
 
 module.exports = {
@@ -20,10 +20,16 @@ module.exports = {
       gas: 5000000,
       gasPrice: 3e9,
     },
+    mainnet: {
+      provider: () => new HDWalletProvider([M_PK], 'https://mainnet.infura.io/v3/372037f46312422895436182560f5a87'),
+      network_id: '1',
+      gas: 20000,
+      gasPrice: 2e9,
+    }
   },
   compilers: {
     solc: {
-      version: "0.4.25",
+      version: "0.4.24",
       // docker: true,
       settings: {
        optimizer: {

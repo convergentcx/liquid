@@ -19,9 +19,6 @@ const Polynomial = require('../lib/Polynomial.js').default;
 
 const exponent = toDecimal('1');
 const slope = toDecimal('0.001');
-const poly = new Polynomial(exponent, slope);
-
-const vReserve = toDecimal('500000000000000');
 
 const randomAddress = () => randomHex(20);
 const randomBytes32 = () => randomHex(32);
@@ -130,7 +127,7 @@ contract('ConvergentBeta', (accounts) => {
   it('creates a new account', async () => {
     const randBytes = randomBytes32();
 
-    const newAccountTx = await cvgBeta.newAccount(
+    const createAccountTx = await cvgBeta.createAccount(
       mERC20.address,
       "1",
       "1000",
@@ -140,19 +137,19 @@ contract('ConvergentBeta', (accounts) => {
       "0",
       randBytes,
       "Logan",
-      "FCK",
+      "DOPE",
       { from: accounts[3] },
     );
 
-    logGasTx(newAccountTx, "ConvergentBeta::newAccount()");
+    logGasTx(createAccountTx, "ConvergentBeta::newAccount()");
     
     // TODO - debug this
-    // const metadataEvent = findEventFromReceipt(newAccountTx.receipt, "MetadataUpdated");
+    // const metadataEvent = findEventFromReceipt(createAccountTx.receipt, "MetadataUpdated");
     // expect(
     //   metadataEvent.toLowerCase()
     // ).to.equal(randBytes);
 
-    const newAccountEvent = findEventFromReceipt(newAccountTx.receipt, "NewAccount");
+    const newAccountEvent = findEventFromReceipt(createAccountTx.receipt, "NewAccount");
     const { account, creator } = newAccountEvent.args;
     expect(
       creator.toLowerCase()
@@ -188,7 +185,7 @@ contract('ConvergentBeta', (accounts) => {
     const retSymbol = await acc.symbol();
     expect(
       retSymbol
-    ).to.equal("FCK");
+    ).to.equal("DOPE");
 
     const retRAsset = await acc.reserveAsset();
     expect(
@@ -238,7 +235,7 @@ contract('ConvergentBeta', (accounts) => {
   });
 
   it('Tries to update an account', async () => {
-    const newAccountTx = await cvgBeta.newAccount(
+    const createAccountTx = await cvgBeta.createAccount(
       mERC20.address,
       "1",
       "1000",
@@ -248,19 +245,19 @@ contract('ConvergentBeta', (accounts) => {
       "0",
       randomBytes32(),
       "Logan",
-      "FCK",
+      "DOPE",
       { from: accounts[3] },
     );
 
-    // logGasTx(newAccountTx, "ConvergentBeta::newAccount()");
+    // logGasTx(createAccountTx, "ConvergentBeta::newAccount()");
     
     // TODO - debug this
-    // const metadataEvent = findEventFromReceipt(newAccountTx.receipt, "MetadataUpdated");
+    // const metadataEvent = findEventFromReceipt(createAccountTx.receipt, "MetadataUpdated");
     // expect(
     //   metadataEvent.toLowerCase()
     // ).to.equal(randBytes);
 
-    const newAccountEvent = findEventFromReceipt(newAccountTx.receipt, "NewAccount");
+    const newAccountEvent = findEventFromReceipt(createAccountTx.receipt, "NewAccount");
     const { account, creator } = newAccountEvent.args;
     expect(
       creator.toLowerCase()
@@ -311,7 +308,7 @@ contract('ConvergentBeta', (accounts) => {
   });
 
   it('Tries to purchase a service', async () => {
-    const newAccountTx = await cvgBeta.newAccount(
+    const createAccountTx = await cvgBeta.createAccount(
       "0x0000000000000000000000000000000000000000",
       "1",
       "1000",
@@ -325,7 +322,7 @@ contract('ConvergentBeta', (accounts) => {
       {from: accounts[7]},
     );
 
-    const newAccountEvent = findEventFromReceipt(newAccountTx.receipt, "NewAccount");
+    const newAccountEvent = findEventFromReceipt(createAccountTx.receipt, "NewAccount");
     const { account, creator } = newAccountEvent.args;
     expect(
       creator.toLowerCase()
@@ -347,6 +344,8 @@ contract('ConvergentBeta', (accounts) => {
     expect(buyTx.receipt.status).to.be.true;
 
     const serviceRequest = await acc.requestService(0, 'hello  world blah blah', { from: accounts[7]});
-    console.log(serviceRequest)
+    expect(
+      serviceRequest.receipt.status
+    ).to.be.true;
   });
 });

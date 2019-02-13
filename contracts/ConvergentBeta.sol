@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "openzeppelin-eth/contracts/ownership/Ownable.sol";
 import "zos-lib/contracts/Initializable.sol";
@@ -6,7 +6,9 @@ import "zos-lib/contracts/upgradeability/AdminUpgradeabilityProxy.sol";
 
 import "./Account.sol";
 
+
 contract ConvergentBeta is Initializable, Ownable {    
+    
     event NewAccount(address account, address indexed creator);
 
     address public baseAccount;
@@ -20,6 +22,9 @@ contract ConvergentBeta is Initializable, Ownable {
     )   public
         initializer
     {
+        // tx.origin is used here due to an inconsistency in zos which
+        //  uses the App.sol contract as `msg.sender`
+        // solhint-disable-next-line avoid-tx-origin
         Ownable.initialize(tx.origin);
 
         baseAccount = _baseAccount;
@@ -42,7 +47,7 @@ contract ConvergentBeta is Initializable, Ownable {
      * @dev Create a new account with ConvergentBeta proxy set as admin.
      * @param _metadata The content address of the metadata on IPFS.
      */
-    function newAccount(
+    function createAccount(
         address _reserveAsset,
         uint256 _slopeN,
         uint256 _slopeD,

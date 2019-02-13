@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity 0.4.24;
 
 import "openzeppelin-eth/contracts/token/ERC20/ERC20.sol";
 import "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol";
@@ -8,16 +8,20 @@ import "zos-lib/contracts/Initializable.sol";
 
 import "./GasPriceOracle.sol";
 
+
 contract CurveEvents {
+
     event Bought(address indexed buyer, uint256 amount, uint256 paid);
     event Contributed(address indexed buyer, uint256 contribution);
     event Sold(address indexed seller, uint256 amount, uint256 reserveReturned);
 }
 
+
 contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
+    
     using SafeMath for uint256;
 
-    function () payable { revert("Fallback disabled"); }
+    function () external payable { revert("Fallback disabled"); }
 
     address public reserveAsset;
     uint256 public reserve;    // Amount held in contract to collaterize sells.
@@ -68,12 +72,14 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
 
     function withdraw() public returns (bool) {
         require(contributions > 0, "Cannot withdraw 0 amount");
-        if (reserveAsset == address(0x0)) {
-            beneficiary.transfer(contributions);
-        } else {
-            ERC20(reserveAsset).transfer(beneficiary, contributions);
-        }
+        uint256 toSend = contributions;
         delete contributions;
+
+        if (reserveAsset == address(0x0)) {
+            beneficiary.transfer(toSend);
+        } else {
+            ERC20(reserveAsset).transfer(beneficiary, toSend);
+        }
         return true;
     }
 
@@ -90,6 +96,9 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
         contributions = contributions.add(cost.sub(reserveAmount));
         reserve = reserve.add(reserveAmount);
 
+        // Must mint tokens before value transfers in case of re-rentrancy.
+        _mint(msg.sender, _tokens);
+
         // If Ether is the reserve send back the extra
         if (reserveAsset == address(0x0)) {
             if (msg.value > cost) {
@@ -100,7 +109,6 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
             ERC20(reserveAsset).transferFrom(msg.sender, address(this), cost);
         }
 
-        _mint(msg.sender, _tokens);
 
         emit Contributed(msg.sender, cost.sub(reserveAmount));
         emit Bought(msg.sender, _tokens, cost);
@@ -120,30 +128,17 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
         );
         //
         reserve = reserve.sub(amountReturned);
+
+        // Must burn tokens before state change in case of re-entrancy
+        _burn(msg.sender, _tokens);
+
         if (reserveAsset == address(0x0)) {
             msg.sender.transfer(amountReturned);
         } else {
             ERC20(reserveAsset).transfer(msg.sender, amountReturned);
         }
 
-        _burn(msg.sender, _tokens);
-
         emit Sold(msg.sender, _tokens, amountReturned);
-    }
-
-    function curveIntegral(uint256 _toX)
-        internal view returns (uint256)
-    {
-        uint256 nexp = exponent.add(1);
-
-        // The below assumes we have 18 decimals on the token.
-        return slopeN.mul(_toX ** nexp).div(nexp).div(slopeD).div(10**18);
-    }
-
-    function solveForY(uint256 _X)
-        internal view returns (uint256)
-    {
-        return slopeN.mul(_X ** exponent).div(slopeD);
     }
 
     function priceToBuy(uint256 _tokens)
@@ -181,6 +176,21 @@ contract DoubleCurveToken is Initializable, CurveEvents, ERC20, ERC20Detailed {
     {
         // Assumes 18 decimals
         return currentPrice().mul(totalSupply()).div(10**18);
+    }
+
+    function solveForY(uint256 _x)
+        internal view returns (uint256)
+    {
+        return slopeN.mul(_x ** exponent).div(slopeD);
+    }
+
+    function curveIntegral(uint256 _toX)
+        internal view returns (uint256)
+    {
+        uint256 nexp = exponent.add(1);
+
+        // The below assumes we have 18 decimals on the token.
+        return slopeN.mul(_toX ** nexp).div(nexp).div(slopeD).div(10**18);
     }
 
     modifier validateGasPrice {
