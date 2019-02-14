@@ -10,6 +10,8 @@
     "local:migrate": "truffle migrate --network local",
     "local:console": "npx truffle console --network local",
     "local:session": "zos session --network local --from 0x1df62f291b2e969fb0849d99d9ce41e2f137006e --expires 3600",
+    "main:console": "npx truffle console --network mainnet",
+    "main:session": "zos session --network mainnet --from 0x707a08cfca0d9096054fde9b0bba0447a2f24e5e --expires 600",
     "rinkeby:session": "zos session --network rinkeby --from 0xd23641fd1e8d5d087ed45ea069ffc6a636fffd06 --expires 3600",
     "rinkeby:console": "npx truffle console --network rinkeby"
   },
@@ -27,7 +29,6 @@
   },
   "homepage": "https://github.com/convergentcx/smart-contracts#readme",
   "dependencies": {
-    "@0x/sol-compiler": "^2.0.2",
     "decimal.js": "^10.0.2",
     "openzeppelin-eth": "^2.0.2",
     "web3": "^1.0.0-beta.37",
@@ -38,6 +39,7 @@
     "ganache-cli": "^6.2.5",
     "solc": "^0.5.3",
     "truffle": "^5.0.2",
-    "truffle-hdwallet-provider": "^1.0.3"
+    "truffle-hdwallet-provider": "^1.0.3",
+    "web3-provider-engine": "^14.1.0"
   }
 }

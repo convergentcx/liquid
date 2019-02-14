@@ -1,7 +1,7 @@
 {
   "contracts": {
     "GasPriceOracle": {
-      "address": "0x03fbff69adbf145143caddcadbe33b409ab69e99",
+      "address": "0x2d196c9138c1a8d90ecc797c5aace7a502970b7f",
       "constructorCode": "608060405234801561001057600080fd5b506107d1806100206000396000f300",
       "bodyBytecodeHash": "a2c0fd9ff0c8b4d656d752c6e333e966c26370bdd625a77a19665515f41942ba",
       "localBytecodeHash": "83544fc04b8db02d045f77a2dc452800f37a76e199361258c4ca6dc78afde4b7",
@@ -89,7 +89,7 @@
       }
     },
     "ConvergentBeta": {
-      "address": "0x9bf113c18dd954bd4a0d5ce5b10de2c93fc4aa10",
+      "address": "0x57c9e7648cc2ee56662fbf5eae0a456bf89d76e8",
       "constructorCode": "608060405234801561001057600080fd5b50612018806100206000396000f300",
       "bodyBytecodeHash": "861381b5e4de1cf6f2336ef0ab18a45381375beb538fa8e41b0f7e9c75dc7a5d",
       "localBytecodeHash": "dcac50c726d79f6109389334b0aee5de5450bd0c4d58d55d3421e28c6cce2e23",
@@ -199,7 +199,7 @@
       }
     },
     "Account": {
-      "address": "0xa1f68eb3b90ffb37278570c96750fc87de33f5e2",
+      "address": "0x050a0dfbd0695ba1476c1fb2c0f9dd48b804aade",
       "constructorCode": "608060405234801561001057600080fd5b50613ac1806100206000396000f300",
       "bodyBytecodeHash": "efe494aad72d04804e414f1285ed95239a15c07edce006f4e0111d6abd6a7fba",
       "localBytecodeHash": "23a2b575c83c844e7b88c453787d70164919869455e6bec5ceb3f3ca19163b55",
@@ -456,33 +456,34 @@
   "proxies": {
     "convergent/GasPriceOracle": [
       {
-        "address": "0xb8d1733b6ceb9b59bfada8c6efe2d2e6e713706a",
+        "address": "0xf6d950dbc0b3841a3b960f4321424e333e777fe6",
         "version": "0.1.0",
-        "implementation": "0x03fbff69adbf145143caddcadbe33b409ab69e99"
+        "implementation": "0x2d196c9138c1a8d90ecc797c5aace7a502970b7f"
       }
     ],
     "convergent/ConvergentBeta": [
       {
-        "address": "0x60dacca6a82cbe636032f4a7363bdcb166de88be",
+        "address": "0x9ce894a11ada19881ab560a5091a4cc3ff8f2d84",
         "version": "0.1.0",
-        "implementation": "0x9bf113c18dd954bd4a0d5ce5b10de2c93fc4aa10"
+        "implementation": "0x57c9e7648cc2ee56662fbf5eae0a456bf89d76e8"
       }
     ]
   },
   "zosversion": "2",
-  "version": "0.1.0",
-  "app": {
-    "address": "0xc4c87ac30354d5db7d7f5cc914bf8c60f3fcfdeb"
-  },
   "package": {
-    "address": "0x92f45ef8aa7fe65d7c3fead420d7c964c73f4de3"
+    "address": "0x2003d3f0b5e7b7248a6bce3985fda75604765456"
+  },
+  "app": {
+    "address": "0x0ec32a951f300d97cbcfe90af8186e1ff6b38a1e"
   },
   "provider": {
-    "address": "0xb8a4cabb5b3184e13852c1693664f1e9e4c03ed1"
+    "address": "0x63b1800592c2c3189a16c673a58f7894dd06eb12"
   },
+  "version": "0.1.0",
+  "frozen": false,
   "dependencies": {
     "openzeppelin-eth": {
-      "package": "0xa44bb80b290de8a465d17b14269df53cf0b9bf4f",
+      "package": "0x778dddf23ec1b5cb18394c6c110480caadb3b0f6",
       "version": "2.0.2"
     }
   }
